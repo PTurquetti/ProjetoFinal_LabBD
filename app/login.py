@@ -1,27 +1,22 @@
 import tkinter
 import customtkinter
 from PIL import ImageTk, Image
-import cx_Oracle
 
 from home import show_home
-from database import execute_query
+from db_controller import DBController
 
 customtkinter.set_appearance_mode("dark")  # Set the appearance mode to system
 customtkinter.set_default_color_theme("blue")  # Set the default color theme to green
 
 # Function to validate login
 def validate_login(username, password):
-     # Using md5 to hash the password
-    query = """
-        SELECT * FROM users 
-        WHERE username = :username 
-        AND password = md5(:password)
-    """
-    parameters = {'username': username, 'password': password}
-    result = execute_query(query, parameters)
-        
-    # Check if a user was found
-    if result:
+    db_controller = DBController()
+
+    # login_valido = db_controller.call_function('pct_autenticacao.valida_login', [username, password], int) # TODO: a função de login ainda precisa ser implementada
+    login_valido = 1
+    
+    # Check if the login is valid
+    if login_valido:
         app.destroy()  # Close the login window
         show_home()  # Navigate to the new page
     else:
@@ -32,7 +27,7 @@ app = customtkinter.CTk()  # Create the main window
 app.geometry("1024x1024")  # Set the size of the window
 app.title("Login")  # Set the title of the window
 
-img1 = ImageTk.PhotoImage(Image.open("back.png"))  # Load the image
+img1 = ImageTk.PhotoImage(Image.open("./imgs/back.png"))  # Load the image
 l1 = customtkinter.CTkLabel(master = app, image=img1)  # Create a label with the image
 l1.pack()  # Pack the label
 
