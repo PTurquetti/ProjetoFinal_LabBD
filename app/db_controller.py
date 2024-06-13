@@ -2,7 +2,7 @@ import os
 import oracledb
 from dotenv import load_dotenv
 
-class OracleDBController:
+class DBController:
     def __init__(self):
         load_dotenv()
         self.user = os.getenv('user')
