@@ -1,5 +1,0 @@
-(feito) existência de federação (a federação só pode existir se tiver pelo menos uma nação associada)
-(feito) associação da facção liderada pelo líder à sua nação (o líder de uma facção deve estar associado a uma nação em que a facção está presente.)
-(feito) quantidade de planetas de nação (considerando somente dominâncias atuais)
-(feito) quantidade de nações de facção
-(feito) intervalo de dominância da nação
