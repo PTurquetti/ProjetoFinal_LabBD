@@ -14,7 +14,6 @@ END PCT_USER_TABLE;
 
 -- Corpo do pacote utilitário
 CREATE OR REPLACE PACKAGE BODY PCT_USER_TABLE AS
-    -- Função que calcula a distância euclidiana entre duas estrelas
     FUNCTION calcular_md5( --criptografar senha
         p_string VARCHAR2
     ) RETURN VARCHAR2 AS
@@ -38,7 +37,7 @@ CREATE OR REPLACE PACKAGE BODY PCT_USER_TABLE AS
         v_cargo CHAR(10);
     BEGIN
         -- Calcule o hash MD5 da senha fornecida pelo usuário usando a função calcular_md5
-        v_input_password_hash := calcular_md5(p_password);
+        v_input_password_hash := PCT_USER_TABLE.calcular_md5(p_password);
         
         BEGIN
             -- Obtenha o hash armazenado no banco de dados
