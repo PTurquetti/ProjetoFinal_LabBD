@@ -1,3 +1,4 @@
+- criptografia de senha usando md5 para a tabela user
 - existência de federação (a federação só pode existir se tiver pelo menos uma nação associada)
 - quantidade de planetas de nação (considerando somente dominâncias atuais)
 - quantidade de nações de facção
