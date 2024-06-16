@@ -64,7 +64,7 @@ CREATE OR REPLACE PACKAGE BODY PCT_USER_TABLE AS
             -- Insere o log
             PCT_USER_TABLE.INSERIR_LOG(v_userid, 'LOGIN');
             -- Retorna resultado
-            RETURN 'Senha correta. Cargo: ' || v_cargo || '.';
+            RETURN 'Senha correta. Id: ' || v_userid || '. Cargo: ' || v_cargo || '.';
         END IF;
         RETURN 'Senha incorreta';
     END fazer_login;
