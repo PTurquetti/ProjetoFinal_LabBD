@@ -1,8 +1,0 @@
-- criptografia de senha usando md5 para a tabela user
-- existência de federação (a federação só pode existir se tiver pelo menos uma nação associada)
-- quantidade de planetas de nação (considerando somente dominâncias atuais)
-- quantidade de nações de facção
-- intervalo de nominância da nação
-- quantidade de habitantes de comunidade
-- associação da facção liderada pelo líder à sua nação (o líder de uma facção deve estar associado a uma nação em que a facção está presente.)
-- trigger para a view com junção
