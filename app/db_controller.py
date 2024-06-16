@@ -14,7 +14,8 @@ class DBController:
     def __map_function_return_type(self, return_type):
         if return_type in [int, float]:
             return oracledb.NUMBER
-        return oracledb.STRING
+        if return_type == str:
+            return oracledb.STRING
         
     def call_function(self, function_name, function_parameters, return_type):
         mapped_return_type = self.__map_function_return_type(return_type)
