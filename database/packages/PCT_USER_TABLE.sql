@@ -44,6 +44,8 @@ CREATE OR REPLACE PACKAGE BODY PCT_USER_TABLE AS
         V_INPUT_PASSWORD_HASH VARCHAR2(32);
         V_CARGO CHAR(10);
         V_USERID USERS.USERID%TYPE;
+        V_NACAO NACAO.NOME%TYPE;
+        V_NOME LIDER.NOME%TYPE;
     BEGIN
         -- Calcule o hash MD5 da senha fornecida pelo usuário usando a função calcular_md5
         V_INPUT_PASSWORD_HASH := PCT_USER_TABLE.CALCULAR_MD5(P_PASSWORD);
@@ -59,7 +61,7 @@ CREATE OR REPLACE PACKAGE BODY PCT_USER_TABLE AS
         -- Compare os hashes e retorne o resultado
         IF V_STORED_PASSWORD = V_INPUT_PASSWORD_HASH THEN
             BEGIN
-                SELECT CARGO INTO V_CARGO FROM LIDER WHERE CPI = P_IDLIDER;
+                SELECT NOME, CARGO, NACAO INTO V_NOME, V_CARGO, V_NACAO FROM LIDER WHERE CPI = P_IDLIDER;
             EXCEPTION
                 WHEN NO_DATA_FOUND THEN
                     RAISE_APPLICATION_ERROR(-20000, 'Usuário não cadastrado');
@@ -68,7 +70,7 @@ CREATE OR REPLACE PACKAGE BODY PCT_USER_TABLE AS
             PCT_USER_TABLE.INSERIR_LOG(V_USERID, 'LOGIN');
 
             -- Retorna resultado
-            RETURN V_USERID || ';' ||  V_CARGO;
+            RETURN V_USERID || ';' || V_NOME || ';' ||  V_CARGO || ';' || V_NACAO;
         END IF;
         RAISE_APPLICATION_ERROR(-20000, 'Senha incorreta');
     END FAZER_LOGIN;
