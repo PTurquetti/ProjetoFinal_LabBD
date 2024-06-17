@@ -4,11 +4,22 @@ from PIL import ImageTk, Image
 import lider_help
 import comandante_help
 import cientista_help
+from login import show_login
 
-def show_home(db_controller): # TODO quando a lógica estiver implementada, adicionar os parâmetros authenticated_user e access_level show_home(authenticated_user, access_level, nacao):
+def show_home(db_controller, id_user, user_name, access_level, nacao, cpi):
     home_window = customtkinter.CTk()
     home_window.geometry("1024x1024")
     home_window.title("Home Page")
+
+
+    def back_to_login():
+        home_window.destroy()
+        show_login(db_controller)
+    
+    
+    def on_closing(db_controller):
+        del db_controller
+        home_window.destroy()
 
 
     img1 = ImageTk.PhotoImage(Image.open("./imgs/back.png"))  # Load the image
@@ -20,12 +31,10 @@ def show_home(db_controller): # TODO quando a lógica estiver implementada, adic
     frame.place(relx=0.5, rely=0.5, anchor=tkinter.CENTER) # Place the frame in the center of the label
 
     # Greetings to the authenticaded user
-    # TODO quando tiver a lógica implementada, substituir {"Username"} por {authenticated_user}
-    hl2 = customtkinter.CTkLabel(master=frame, text=f"Bem-vindo, {"Username"}", font=("Garamond", 20))
+    hl2 = customtkinter.CTkLabel(master=frame, text=f"Bem-vindo, {user_name}", font=("Garamond", 20))
     hl2.place(relx=0.5, rely=0.12, anchor=tkinter.CENTER)
 
-    # TODO quando tiver a lógica implementada, substituir {"cargo"} por {access-level} e {"nação"} por {nacao}
-    hl3 = customtkinter.CTkLabel(master=frame, text=f"Aqui está o que você pode fazer como, {"cargo"} da nação {"nação"}" , font=("Garamond", 18), wraplength=500)
+    hl3 = customtkinter.CTkLabel(master=frame, text=f"Aqui está o que você pode fazer como, {access_level} da nação {nacao}" , font=("Garamond", 18), wraplength=500)
     hl3.place(relx=0.5, rely=0.18, anchor=tkinter.CENTER)
 
     frame2 = customtkinter.CTkFrame(master=frame, width=550, height=300, corner_radius=36)  # Create a frame with rounded corners
@@ -34,8 +43,6 @@ def show_home(db_controller): # TODO quando a lógica estiver implementada, adic
     # TODO Decidir que tipo de informação de overview será exibida
     hl2 = customtkinter.CTkLabel(master=frame2, text="Selecione o que gostaria de fazer ao lado.", font=("Garamond", 16))
     hl2.place(relx=0.5, rely=0.5, anchor="center")
-
-    access_level = "CIENTISTA"  # TODO: quando a lógica estiver implementada, substituir "admin" pelo access_level
 
 
     if access_level == "LIDER":
@@ -49,8 +56,7 @@ def show_home(db_controller): # TODO quando a lógica estiver implementada, adic
         func3_button = customtkinter.CTkButton(master=frame, text="Credenciar novas comunidades", width=200, height=40, command=lambda: lider_help.credenciar_nova_comunidade(frame))
         func3_button.place(relx=0.15, rely=0.58, anchor=tkinter.CENTER)
         
-        # TODO quando a lógica estiver implementada, substituir {"nação"} por {nacao}
-        func4_button = customtkinter.CTkButton(master=frame, text=f"Remover facção de {"nação"}", width=200, height=40, command=lambda: lider_help.remover_faccao_nacao(frame))
+        func4_button = customtkinter.CTkButton(master=frame, text=f"Remover facção de {nacao}", width=200, height=40, command=lambda: lider_help.remover_faccao_nacao(frame))
         func4_button.place(relx=0.15, rely=0.7, anchor=tkinter.CENTER)
 
     elif access_level == "OFICIAL":
@@ -93,8 +99,9 @@ def show_home(db_controller): # TODO quando a lógica estiver implementada, adic
     button1.place(relx=0.51, rely=0.91, anchor=tkinter.CENTER)
 
     # Log out
-    button2 = customtkinter.CTkButton(master=frame, text="Log out", width=200, height=40)
+    button2 = customtkinter.CTkButton(master=frame, text="Log out", width=200, height=40, command=lambda: back_to_login())
     button2.place(relx=0.77, rely=0.91, anchor=tkinter.CENTER)
 
 
+    home_window.protocol("WM_DELETE_WINDOW", lambda: on_closing(db_controller))
     home_window.mainloop()  # Start the main loop

@@ -13,6 +13,7 @@ class DBController:
         self.connection = oracledb.connect(user=self.user, password=self.password, host=self.host, port=self.port, service_name=self.service_name)
     
     def __del__(self):
+        self.connection.commit()
         self.connection.close()
 
     def __map_function_return_type(self, return_type):

@@ -2,8 +2,8 @@ import tkinter
 import customtkinter
 from PIL import ImageTk, Image
 
-from home import show_home
 from db_controller import DBController
+from oracledb.exceptions import DatabaseError
 
 
 def show_login(db_controller):
@@ -13,24 +13,27 @@ def show_login(db_controller):
 
     # Function to validate login
     def validate_login(): # Adicionado db_controller como parâmetro
-        # login_valido = db_controller.call_function('pct_autenticacao.valida_login', [username, password], int) # TODO: a função de login ainda precisa ser implementada
-        login_valido = True
-        
-        # Check if the login is valid
-        if login_valido:
-            # Get the username and access level from the database
-            # TODO: a função de login precisa retornar, também, o nome do usuário, seu nível de acesso e sua nacao para que possamos passar essas informações para a próxima página
-            # username = db_controller.call_function('pct_autenticacao.get_username', [username], str)
-            # access_level = db_controller.call_function('pct_autenticacao.get_access_level', [username], str)
-            # nacao = db_controller.call_function('pct_autenticacao.get_nacao', [username], str)
-            
+        from home import show_home
+        try:
+            cpi, senha = entry1.get(), entry2.get()
+            info_login = db_controller.call_function('PCT_USER_TABLE.fazer_login', [cpi, senha], str)
+            info_login = [s.strip() for s in info_login.split(';')]
+            id_user, username, access_level, nacao = info_login
             app.destroy()  # Close the login window
-            show_home(db_controller) # Passa o db_controller para a próxima tela
-            # Depois que tiver a lógica do username e access_level, substituir essa funcao pela de baixo
-            # show_home(db_controller, username, access_level, nacao)  # Navigate to the next page and pass the username and access level to adequate the page
-        else:
-            print("Login failed.")
-
+            show_home(db_controller, id_user, username, access_level, nacao, cpi) # Passa o db_controller para a próxima tela
+        except DatabaseError as ex:
+            error, = ex.args
+            if error.code == 20000:  # erro lógico 
+                msg_erro = error.message.split(':')[1][:-10].strip()
+                print('Erro do usuário:', msg_erro)
+            else:
+                print('Erro da base de dados:', error.code, error.message)
+            #TODO: Mostrar mensagem de erro ao usuário e re-validação caso necessário
+    
+    def on_closing(db_controller):
+        del db_controller
+        app.destroy()
+        
 
     app = customtkinter.CTk()  # Create the main window
     app.geometry("1024x1024")  # Set the size of the window
@@ -61,9 +64,11 @@ def show_login(db_controller):
     button1 = customtkinter.CTkButton(master=frame, text="Log in", width=350, height=40, corner_radius=32, command=lambda: validate_login())  # Passa o db_controller para validate_login
     button1.place(relx=0.5, rely=0.75, anchor=tkinter.CENTER)  # Place the button in the center of the frame
 
+    app.protocol("WM_DELETE_WINDOW", lambda: on_closing(db_controller))
     app.mainloop()  # Start the main loop
 
 
 if __name__ == "__main__":
+    print('Conectando ao banco de dados...')
     db_controller = DBController()  # Inicializa o controlador do banco de dados
     show_login(db_controller)  # Exibe a tela de login
