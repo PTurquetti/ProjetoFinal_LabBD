@@ -14,11 +14,11 @@ CREATE OR REPLACE PACKAGE PCT_GERENCIAMENTO_CIENTISTA AS
         p_y ESTRELA.Y%TYPE,
         p_z ESTRELA.Z%TYPE
     ) RETURN VARCHAR2;
-    /*FUNCTION remove_estrela_por_id (
+    FUNCTION remove_estrela_por_id (
         p_cpi LIDER.CPI%TYPE,
         p_id ESTRELA.ID_ESTRELA%TYPE
     ) RETURN VARCHAR2;
-    FUNCTION remove_estrela_por_posicao (
+    /*FUNCTION remove_estrela_por_posicao (
         p_cpi LIDER.CPI%TYPE,
         p_x ESTRELA.X%TYPE,
         p_y ESTRELA.Y%TYPE,
@@ -92,8 +92,30 @@ CREATE OR REPLACE PACKAGE BODY PCT_GERENCIAMENTO_CIENTISTA AS
             RAISE_APPLICATION_ERROR(-20000, 'Já existe estrela nessa posição ou com esse ID');
         WHEN OTHERS THEN
             RAISE_APPLICATION_ERROR(-20000, 'Não foi possível inserir estrela.');
-
     END insere_estrela;
+
+    FUNCTION remove_estrela_por_id (
+        p_cpi LIDER.CPI%TYPE,
+        p_id ESTRELA.ID_ESTRELA%TYPE
+    ) RETURN VARCHAR2 IS
+        v_estrela ESTRELA.ID_ESTRELA%TYPE;
+    BEGIN
+        IF (NOT retorna_se_cientista(p_cpi)) THEN
+            RAISE E_NAO_EH_CIENTISTA;
+        END IF;
+        SELECT ID_ESTRELA INTO v_estrela FROM ESTRELA WHERE ID_ESTRELA = p_id;
+        DELETE FROM ESTRELA WHERE ID_ESTRELA = p_id;
+        RETURN 'Estrela removida com sucesso.';
+    EXCEPTION
+        WHEN E_USER_NAO_CADASTRADO THEN
+            RAISE_APPLICATION_ERROR(-20000, 'Usuário não cadastrado');
+        WHEN E_NAO_EH_CIENTISTA THEN
+            RAISE_APPLICATION_ERROR(-20000, 'Usuário não é cientista');
+        WHEN NO_DATA_FOUND THEN
+            RAISE_APPLICATION_ERROR(-20000, 'Estrela com esse id não existe');
+        WHEN OTHERS THEN
+            RAISE_APPLICATION_ERROR(-20000, 'Não foi possível inserir estrela.');
+    END remove_estrela_por_id;
     
 END PCT_GERENCIAMENTO_CIENTISTA;
 /
