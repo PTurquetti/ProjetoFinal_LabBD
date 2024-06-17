@@ -31,7 +31,6 @@ class DBController:
     def call_function(self, function_name, function_parameters, return_type):
         mapped_return_type = self.__map_function_return_type(return_type)
         converted_function_name = f'a11796893.{function_name}'
-        # with oracledb.connect(user=self.user, password=self.password, host=self.host, port=self.port, service_name=self.service_name) as connection:
         cursor = self.connection.cursor()
         try:
             output = cursor.callfunc(converted_function_name, mapped_return_type, function_parameters)
