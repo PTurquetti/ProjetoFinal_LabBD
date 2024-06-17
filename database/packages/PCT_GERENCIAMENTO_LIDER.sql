@@ -4,7 +4,7 @@ CREATE OR REPLACE PACKAGE PCT_GERENCIAMENTO_LIDER AS
     E_LIDER_JA_EH_LIDER_DE_OUTRA_FACCAO EXCEPTION;
     E_COMUNIDADE_JA_PARTICIPA EXCEPTION;
     E_COMUNIDADE_INVALIDA EXCEPTION;
-    /*E_FACCAO_NAO_PERTENCE_A_NACAO EXCEPTION;*/
+    E_FACCAO_NAO_PERTENCE_A_NACAO EXCEPTION;
     FUNCTION alterar_nome_faccao (
         p_cpilider LIDER.CPI%TYPE,
         p_novo_nome FACCAO.NOME%TYPE
@@ -18,10 +18,10 @@ CREATE OR REPLACE PACKAGE PCT_GERENCIAMENTO_LIDER AS
         p_especie_comunidade COMUNIDADE.NOME%TYPE, 
         p_nome_comunidade COMUNIDADE.NOME%TYPE
     ) RETURN VARCHAR2;
-    /*FUNCTION remove_faccao_de_nacao (
+    FUNCTION remove_faccao_de_nacao (
         p_cpilider LIDER.CPI%TYPE,
         p_nacao NACAO.NOME%TYPE
-    ) RETURN VARCHAR2;*/
+    ) RETURN VARCHAR2;
 END PCT_GERENCIAMENTO_LIDER;
 
 /
@@ -148,6 +148,8 @@ CREATE OR REPLACE PACKAGE BODY PCT_GERENCIAMENTO_LIDER AS
         RETURN 'Comunidade credenciada com sucesso!';
 
     EXCEPTION
+        WHEN E_USER_NAO_EH_LIDER THEN
+            RAISE_APPLICATION_ERROR(-20000, 'Usuário não é líder de nenhuma facção.');
         WHEN E_COMUNIDADE_JA_PARTICIPA THEN
             RAISE_APPLICATION_ERROR(-20000, 'Comunidade já participa dessa facção.');
         WHEN E_COMUNIDADE_INVALIDA THEN
@@ -155,6 +157,45 @@ CREATE OR REPLACE PACKAGE BODY PCT_GERENCIAMENTO_LIDER AS
         WHEN OTHERS THEN
             RAISE_APPLICATION_ERROR(-20000, 'Não foi possível credenciar comunidade.');
     END credenciar_comunidade;
+
+    FUNCTION retorna_comunidade_participa_da_nacao (
+        p_faccao FACCAO.NOME%TYPE,
+        p_nacao NACAO.NOME%TYPE
+    ) RETURN BOOLEAN IS
+        v_count NUMBER;
+    BEGIN
+        SELECT COUNT(*) INTO v_count
+            FROM NACAO_FACCAO 
+            WHERE FACCAO = p_faccao AND NACAO = p_nacao;
+        IF v_count > 0 THEN
+            RETURN TRUE;
+        END IF;
+        RETURN FALSE;
+    END retorna_comunidade_participa_da_nacao;
+
+    FUNCTION remove_faccao_de_nacao (
+        p_cpilider LIDER.CPI%TYPE,
+        p_nacao NACAO.NOME%TYPE
+    ) RETURN VARCHAR2 IS
+        v_faccao FACCAO.NOME%TYPE; -- Facção do líder
+    BEGIN
+        v_faccao := retorna_faccao(p_cpilider); -- Retorna a facção do líder
+        IF v_faccao is null THEN
+            RAISE E_USER_NAO_EH_LIDER; -- Usuário não é líder de nenhuma facção
+        END IF;
+        IF(NOT retorna_comunidade_participa_da_nacao(v_faccao, p_nacao)) THEN
+            RAISE E_FACCAO_NAO_PERTENCE_A_NACAO;
+        END IF;
+        DELETE FROM NACAO_FACCAO WHERE NACAO = p_nacao AND FACCAO = v_faccao;
+        RETURN 'Facção removida com sucesso!';
+    EXCEPTION
+        WHEN E_FACCAO_NAO_PERTENCE_A_NACAO THEN
+            RAISE_APPLICATION_ERROR(-20000, 'Facção já não pertence à nação.');
+        WHEN E_USER_NAO_EH_LIDER THEN
+            RAISE_APPLICATION_ERROR(-20000, 'Usuário não é líder de nenhuma facção.');
+        WHEN OTHERS THEN
+            RAISE_APPLICATION_ERROR(-20000, 'Não foi possível remover a facção da nação.');
+    END remove_faccao_de_nacao;
     
 END PCT_GERENCIAMENTO_LIDER;
 /
