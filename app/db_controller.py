@@ -5,12 +5,12 @@ from dotenv import load_dotenv
 class DBController:
     def __init__(self):
         load_dotenv()
-        self.user = os.getenv('user')
-        self.host = os.getenv('host')
-        self.port = os.getenv('port')
-        self.service_name = os.getenv('service_name')
-        self.password = os.getenv('password')
-        self.connection = oracledb.connect(user=self.user, password=self.password, host=self.host, port=self.port, service_name=self.service_name)
+        user = os.getenv('user')
+        host = os.getenv('host')
+        port = os.getenv('port')
+        service_name = os.getenv('service_name')
+        password = os.getenv('password')
+        self.connection = oracledb.connect(user=user, password=password, host=host, port=port, service_name=service_name)
     
     def __del__(self):
         self.connection.commit()
