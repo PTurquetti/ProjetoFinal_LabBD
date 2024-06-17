@@ -18,7 +18,7 @@ def validate_login(): #quando a lógica estiver implementada, adicionar os parâ
     # Check if the login is valid
     if login_valido:
         # Get the username and access level from the database
-        # TODO: a função de login precisa retornar, também, o nome do usuário e seu nível de acesso para que possamos passar essas informações para a próxima página
+        # TODO: a função de login precisa retornar, também, o nome do usuário, seu nível de acesso e sua nacao para que possamos passar essas informações para a próxima página
         # username = db_controller.call_function('pct_autenticacao.get_username', [username], str)
         # access_level = db_controller.call_function('pct_autenticacao.get_access_level', [username], str)
         # nacao = db_controller.call_function('pct_autenticacao.get_nacao', [username], str)

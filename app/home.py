@@ -31,10 +31,10 @@ def show_home(): # TODO quando a lógica estiver implementada, adicionar os par�
     hl2 = customtkinter.CTkLabel(master=frame2, text="Selecione o que gostaria de fazer ao lado.", font=("Garamond", 16))
     hl2.place(relx=0.5, rely=0.5, anchor="center")
 
-    access_level = "cientista"  # TODO: quando a lógica estiver implementada, substituir "admin" pelo access_level
+    access_level = "CIENTISTA"  # TODO: quando a lógica estiver implementada, substituir "admin" pelo access_level
 
 
-    if access_level == "leader":
+    if access_level == "LIDER":
         # Funções específicas para Líder de facção
         func1_button = customtkinter.CTkButton(master=frame, text="Alterar nome da facção", width=200, height=40)
         func1_button.place(relx=0.15, rely=0.34, anchor=tkinter.CENTER)
@@ -49,13 +49,13 @@ def show_home(): # TODO quando a lógica estiver implementada, adicionar os par�
         func4_button = customtkinter.CTkButton(master=frame, text=f"Remover facção de {"nação"}", width=200, height=40)
         func4_button.place(relx=0.15, rely=0.7, anchor=tkinter.CENTER)
 
-    elif access_level == "oficial":
+    elif access_level == "OFICIAL":
         # Funções específicas para Oficial
         # ele n tem? só overview TODO qq eu faço no oficial então?
         hl2 = customtkinter.CTkLabel(master=frame2, text="Decidir o que colocar para o oficial", font=("Garamond", 16))
         hl2.place(relx=0.5, rely=0.6, anchor="center")    
 
-    elif access_level == "comandante":
+    elif access_level == "COMANDANTE":
         # Funções específicas para Comandante
         func1_button = customtkinter.CTkButton(master=frame, text="Incluir nação em uma federação", width=200, height=40)
         func1_button.place(relx=0.15, rely=0.34, anchor=tkinter.CENTER)
@@ -70,7 +70,7 @@ def show_home(): # TODO quando a lógica estiver implementada, adicionar os par�
         func4_button = customtkinter.CTkButton(master=frame, text="Inserir dominância em planeta", width=200, height=40)
         func4_button.place(relx=0.15, rely=0.7, anchor=tkinter.CENTER)
 
-    elif access_level == "cientista":
+    elif access_level == "CIENTISTA":
         # Funções específicas para cientista
         func1_button = customtkinter.CTkButton(master=frame, text="Inserir nova estrela", width=200, height=40)
         func1_button.place(relx=0.15, rely=0.34, anchor=tkinter.CENTER)
