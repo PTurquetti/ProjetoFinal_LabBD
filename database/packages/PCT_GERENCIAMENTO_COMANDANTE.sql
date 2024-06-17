@@ -41,7 +41,7 @@ CREATE OR REPLACE PACKAGE BODY PCT_GERENCIAMENTO_COMANDANTE AS
         v_saida BOOLEAN;
     BEGIN
         SELECT cargo INTO v_cargo FROM lider WHERE CPI =  p_cpiuser;
-        IF UPPER(v_cargo) = 'COMANDANTE' THEN
+        IF UPPER(TRIM(v_cargo)) = 'COMANDANTE' THEN
             RETURN TRUE;
         END IF;
         RETURN FALSE;
