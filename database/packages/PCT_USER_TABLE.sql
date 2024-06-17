@@ -66,8 +66,6 @@ CREATE OR REPLACE PACKAGE BODY PCT_USER_TABLE AS
                 WHEN NO_DATA_FOUND THEN
                     RAISE_APPLICATION_ERROR(-20000, 'Usuário não cadastrado');
             END;
-            -- Insere o log
-            PCT_USER_TABLE.INSERIR_LOG(V_USERID, 'LOGIN');
 
             -- Retorna resultado
             RETURN V_USERID || ';' || V_NOME || ';' ||  V_CARGO || ';' || V_NACAO;
