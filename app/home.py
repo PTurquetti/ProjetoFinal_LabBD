@@ -1,11 +1,15 @@
 import tkinter
 import customtkinter
 from PIL import ImageTk, Image
+import lider_help
+import comandante_help
+import cientista_help
 
-def show_home(): # TODO quando a lógica estiver implementada, adicionar os parâmetros authenticated_user e access_level show_home(authenticated_user, access_level, nacao):
+def show_home(db_controller): # TODO quando a lógica estiver implementada, adicionar os parâmetros authenticated_user e access_level show_home(authenticated_user, access_level, nacao):
     home_window = customtkinter.CTk()
     home_window.geometry("1024x1024")
     home_window.title("Home Page")
+
 
     img1 = ImageTk.PhotoImage(Image.open("./imgs/back.png"))  # Load the image
     l1 = customtkinter.CTkLabel(master = home_window, image=img1)  # Create a label with the image
@@ -21,7 +25,7 @@ def show_home(): # TODO quando a lógica estiver implementada, adicionar os par�
     hl2.place(relx=0.5, rely=0.12, anchor=tkinter.CENTER)
 
     # TODO quando tiver a lógica implementada, substituir {"cargo"} por {access-level} e {"nação"} por {nacao}
-    hl3 = customtkinter.CTkLabel(master=frame, text=f"Aqui está o que você pode fazer como, {"cargo"} da nação {"nação"}" , font=("Garamond", 18))
+    hl3 = customtkinter.CTkLabel(master=frame, text=f"Aqui está o que você pode fazer como, {"cargo"} da nação {"nação"}" , font=("Garamond", 18), wraplength=500)
     hl3.place(relx=0.5, rely=0.18, anchor=tkinter.CENTER)
 
     frame2 = customtkinter.CTkFrame(master=frame, width=550, height=300, corner_radius=36)  # Create a frame with rounded corners
@@ -36,17 +40,17 @@ def show_home(): # TODO quando a lógica estiver implementada, adicionar os par�
 
     if access_level == "LIDER":
         # Funções específicas para Líder de facção
-        func1_button = customtkinter.CTkButton(master=frame, text="Alterar nome da facção", width=200, height=40)
+        func1_button = customtkinter.CTkButton(master=frame, text="Alterar nome da facção", width=200, height=40, command=lambda: lider_help.alter_faction_name(frame))
         func1_button.place(relx=0.15, rely=0.34, anchor=tkinter.CENTER)
         
-        func2_button = customtkinter.CTkButton(master=frame, text="Indicar novo líder", width=200, height=40)
+        func2_button = customtkinter.CTkButton(master=frame, text="Indicar novo líder", width=200, height=40, command=lambda: lider_help.indicar_novo_lider(frame))
         func2_button.place(relx=0.15, rely=0.46, anchor=tkinter.CENTER)
         
-        func3_button = customtkinter.CTkButton(master=frame, text="Credenciar novas comunidades", width=200, height=40)
+        func3_button = customtkinter.CTkButton(master=frame, text="Credenciar novas comunidades", width=200, height=40, command=lambda: lider_help.credenciar_nova_comunidade(frame))
         func3_button.place(relx=0.15, rely=0.58, anchor=tkinter.CENTER)
         
         # TODO quando a lógica estiver implementada, substituir {"nação"} por {nacao}
-        func4_button = customtkinter.CTkButton(master=frame, text=f"Remover facção de {"nação"}", width=200, height=40)
+        func4_button = customtkinter.CTkButton(master=frame, text=f"Remover facção de {"nação"}", width=200, height=40, command=lambda: lider_help.remover_faccao_nacao(frame))
         func4_button.place(relx=0.15, rely=0.7, anchor=tkinter.CENTER)
 
     elif access_level == "OFICIAL":
@@ -57,41 +61,38 @@ def show_home(): # TODO quando a lógica estiver implementada, adicionar os par�
 
     elif access_level == "COMANDANTE":
         # Funções específicas para Comandante
-        func1_button = customtkinter.CTkButton(master=frame, text="Incluir nação em uma federação", width=200, height=40)
+        func1_button = customtkinter.CTkButton(master=frame, text="Incluir nação em uma federação", width=200, height=40, command=lambda: comandante_help.incluir_nacao_federacao(frame))
         func1_button.place(relx=0.15, rely=0.34, anchor=tkinter.CENTER)
 
-        # Funções específicas para Comandante
-        func2_button = customtkinter.CTkButton(master=frame, text="Excluir nação de uma federação", width=200, height=40)
+        func2_button = customtkinter.CTkButton(master=frame, text="Excluir nação de uma federação", width=200, height=40, command=lambda: comandante_help.excluir_nacao_federacao(frame))
         func2_button.place(relx=0.15, rely=0.46, anchor=tkinter.CENTER)
         
-        func3_button = customtkinter.CTkButton(master=frame, text="Criar nova federação na nação", width=200, height=40)
+        func3_button = customtkinter.CTkButton(master=frame, text="Criar nova federação na nação", width=200, height=40, command=lambda: comandante_help.criar_nova_federacao(frame))
         func3_button.place(relx=0.15, rely=0.58, anchor=tkinter.CENTER)
 
-        func4_button = customtkinter.CTkButton(master=frame, text="Inserir dominância em planeta", width=200, height=40)
+        func4_button = customtkinter.CTkButton(master=frame, text="Inserir dominância em planeta", width=200, height=40, command=lambda: comandante_help.inserir_dominancia_planeta(frame))
         func4_button.place(relx=0.15, rely=0.7, anchor=tkinter.CENTER)
 
     elif access_level == "CIENTISTA":
         # Funções específicas para cientista
-        func1_button = customtkinter.CTkButton(master=frame, text="Inserir nova estrela", width=200, height=40)
+        func1_button = customtkinter.CTkButton(master=frame, text="Inserir nova estrela", width=200, height=40, command=lambda: cientista_help.inserir_nova_estrela(frame))
         func1_button.place(relx=0.15, rely=0.34, anchor=tkinter.CENTER)
 
         # Funções específicas para Comandante
-        func2_button = customtkinter.CTkButton(master=frame, text="Ver informações sobre uma estrela", width=200, height=40)
+        func2_button = customtkinter.CTkButton(master=frame, text="Ver informações sobre uma estrela", width=200, height=40, command=lambda: cientista_help.ver_informacoes_estrela(frame))
         func2_button.place(relx=0.15, rely=0.46, anchor=tkinter.CENTER)
         
-        func3_button = customtkinter.CTkButton(master=frame, text="Atualizar estrela", width=200, height=40)
+        func3_button = customtkinter.CTkButton(master=frame, text="Atualizar estrela", width=200, height=40, command=lambda: cientista_help.atualizar_estrela(frame))
         func3_button.place(relx=0.15, rely=0.58, anchor=tkinter.CENTER)
 
-        func4_button = customtkinter.CTkButton(master=frame, text="Deletar estrela", width=200, height=40)
+        func4_button = customtkinter.CTkButton(master=frame, text="Deletar estrela", width=200, height=40, command=lambda: cientista_help.remover_estrela(frame))
         func4_button.place(relx=0.15, rely=0.7, anchor=tkinter.CENTER)
 
-    
-
-    # Função 1
-    button1 = customtkinter.CTkButton(master=frame, text="Generate report", width=200, height=40)
+    # Relatório
+    button1 = customtkinter.CTkButton(master=frame, text="Gerar relatório", width=200, height=40)
     button1.place(relx=0.51, rely=0.91, anchor=tkinter.CENTER)
 
-    # Função 2
+    # Log out
     button2 = customtkinter.CTkButton(master=frame, text="Log out", width=200, height=40)
     button2.place(relx=0.77, rely=0.91, anchor=tkinter.CENTER)
 
