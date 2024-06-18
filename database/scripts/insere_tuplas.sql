@@ -1,9 +1,3 @@
--- TOTAL FACTIONS: 117
--- TOTAL LEADERS: 428
--- TOTAL NATIONS*: 332
--- TOTAL COMMUNITIES: 130
--- TOTAL PLANETS*: 256
--- TOTAL SPECIES: 166
 INSERT INTO lider VALUES('628.944.680-92', 'Maria', 'OFICIAL', 'Non vel.', 'Labore at');
 INSERT INTO lider VALUES('560.330.912-79', 'Ana', 'COMANDANTE', 'Iure ab.', 'Non culpa');
 INSERT INTO lider VALUES('728.905.699-06', 'Francis', 'COMANDANTE', 'Cum eum.', 'Saepe est');
