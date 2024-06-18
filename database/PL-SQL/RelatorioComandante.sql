@@ -283,6 +283,7 @@ CREATE OR REPLACE PACKAGE BODY PCT_RELATORIO_COMANDANTE IS
         V_DIST_PLANETA NUMBER;
         V_QTD_LINHAS NUMBER;
         V_NUMERO_LINHA NUMBER;
+        V_QTD_NACOES_DOMINANTES NUMBER;
 
         -- Tipo para registro de nação e datas de início e fim da última dominação
         TYPE REGDATASDOMINACAO IS RECORD (
@@ -457,41 +458,67 @@ CREATE OR REPLACE PACKAGE BODY PCT_RELATORIO_COMANDANTE IS
         END LOOP;
 
         -- Consulta dos planetas com potencial de dominação
-        FOR R IN (
-            SELECT
-                OP.ESTRELA,
-                OP.PLANETA
-            FROM
-                DOMINANCIA D
-            JOIN
-                ORBITA_PLANETA OP ON OP.PLANETA = D.PLANETA
-            JOIN
-                SISTEMA S ON S.ESTRELA = OP.ESTRELA  -- garantia de que a estrela pertence a um sistema
-            WHERE
-                D.DATA_FIM IS NOT NULL AND D.DATA_FIM < CURRENT_DATE
-        ) LOOP
-            SELECT 
-                MIN(PCT_UTILITARIO.CALCULAR_DISTANCIA_ESTRELAS(R.ESTRELA, S2.estrela))
-            INTO
-                V_DIST_PLANETA
-            FROM
-                SISTEMA S2
-            JOIN
-                ORBITA_PLANETA OP2 ON OP2.ESTRELA = S2.ESTRELA
-            JOIN
-                DOMINANCIA D2 ON OP2.PLANETA = D2.PLANETA
-            WHERE 
-                D2.NACAO = V_ATRIBUTOS_LIDER.NACAO;
-            IF V_DIST_PLANETA <= P_DIST_MAX THEN
-                IF PLANETAS_EXPANSAO.EXISTS(R.PLANETA) THEN
-                    IF V_DIST_PLANETA < PLANETAS_EXPANSAO(R.PLANETA).DISTANCIA THEN
+        SELECT
+            COUNT(*)
+        INTO
+            V_QTD_NACOES_DOMINANTES
+        FROM 
+            DOMINANCIA D
+        WHERE
+            (D.DATA_FIM IS NULL OR D.DATA_FIM > CURRENT_DATE) AND D.NACAO = V_ATRIBUTOS_LIDER.NACAO;
+        IF V_QTD_NACOES_DOMINANTES = 0 THEN
+            FOR R IN (
+                SELECT
+                    OP.ESTRELA,
+                    OP.PLANETA
+                FROM
+                    DOMINANCIA D
+                JOIN
+                    ORBITA_PLANETA OP ON OP.PLANETA = D.PLANETA
+                JOIN
+                    SISTEMA S ON S.ESTRELA = OP.ESTRELA  -- garantia de que a estrela pertence a um sistema
+                WHERE
+                    D.DATA_FIM IS NOT NULL AND D.DATA_FIM < CURRENT_DATE
+            ) LOOP
+                PLANETAS_EXPANSAO(R.PLANETA) := REGPLANETASEXPANSAO(R.PLANETA, 0);
+            END LOOP;
+        ELSE
+            FOR R IN (
+                SELECT
+                    OP.ESTRELA,
+                    OP.PLANETA
+                FROM
+                    DOMINANCIA D
+                JOIN
+                    ORBITA_PLANETA OP ON OP.PLANETA = D.PLANETA
+                JOIN
+                    SISTEMA S ON S.ESTRELA = OP.ESTRELA  -- garantia de que a estrela pertence a um sistema
+                WHERE
+                    D.DATA_FIM IS NOT NULL AND D.DATA_FIM < CURRENT_DATE
+            ) LOOP
+                SELECT 
+                    MIN(PCT_UTILITARIO.CALCULAR_DISTANCIA_ESTRELAS(R.ESTRELA, S2.estrela))
+                INTO
+                    V_DIST_PLANETA
+                FROM
+                    SISTEMA S2
+                JOIN
+                    ORBITA_PLANETA OP2 ON OP2.ESTRELA = S2.ESTRELA
+                JOIN
+                    DOMINANCIA D2 ON OP2.PLANETA = D2.PLANETA
+                WHERE 
+                    D2.NACAO = V_ATRIBUTOS_LIDER.NACAO;
+                IF V_DIST_PLANETA <= P_DIST_MAX THEN
+                    IF PLANETAS_EXPANSAO.EXISTS(R.PLANETA) THEN
+                        IF V_DIST_PLANETA < PLANETAS_EXPANSAO(R.PLANETA).DISTANCIA THEN
+                            PLANETAS_EXPANSAO(R.PLANETA) := REGPLANETASEXPANSAO(R.PLANETA, V_DIST_PLANETA);
+                        END IF;
+                    ELSE
                         PLANETAS_EXPANSAO(R.PLANETA) := REGPLANETASEXPANSAO(R.PLANETA, V_DIST_PLANETA);
                     END IF;
-                ELSE
-                    PLANETAS_EXPANSAO(R.PLANETA) := REGPLANETASEXPANSAO(R.PLANETA, V_DIST_PLANETA);
                 END IF;
-            END IF;
-        END LOOP;
+            END LOOP;
+        END IF;
 
         IF P_LINHA_INICIO = 1 THEN
             V_SAIDA_RELATORIO := 'PLANETA;ULT_NACAO_DOMINANTE;DATA_INICIO_DOMINACAO;DATA_FIM_DOMINACAO;QTD_ESPECIES_ORIGINARIAS;QTD_ESPECIES_ATUAIS;QTD_COMUNIDADES_ATUAIS;QTD_HABITANTES_ATUAIS;QTD_FACCOES_ATUAIS;FACCAO_MAJORITARIA;QTD_FACCAO_MAJORITARIA;DISTANCIA' || CHR(10);
@@ -525,16 +552,3 @@ CREATE OR REPLACE PACKAGE BODY PCT_RELATORIO_COMANDANTE IS
     END GERAR_RELATORIO_PLANETAS_EXPANSAO_COMANDANTE;
 END PCT_RELATORIO_COMANDANTE;
 /
-
--- SET SERVEROUTPUT ON;
-
-BEGIN
-    -- DBMS_OUTPUT.PUT_LINE('Relatório de todos os planetas de um comandante:');
-    -- DBMS_OUTPUT.PUT_LINE(PCT_RELATORIO_COMANDANTE.GERAR_RELATORIO_TODOS_PLANETAS_COMANDANTE('868.463.260-96', 1));
-    DBMS_OUTPUT.PUT_LINE('Relatório de todos os planetas de uma nação comandante:');
-    DBMS_OUTPUT.PUT_LINE(PCT_RELATORIO_COMANDANTE.GERAR_RELATORIO_PLANETAS_NACAO_COMANDANTE('277.065.929-03', 1));
-    -- DBMS_OUTPUT.PUT_LINE('Relatório de expansão comandante:');
-    -- DBMS_OUTPUT.PUT_LINE(PCT_RELATORIO_COMANDANTE.GERAR_RELATORIO_PLANETAS_EXPANSAO_COMANDANTE('248.240.201-11', 10, 1));
-    -- DBMS_OUTPUT.PUT_LINE(PCT_RELATORIO_COMANDANTE.GERAR_RELATORIO_PLANETAS_EXPANSAO_COMANDANTE('868.463.260-96', 10, 1));
-
-END;
