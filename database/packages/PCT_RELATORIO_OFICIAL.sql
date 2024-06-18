@@ -4,40 +4,37 @@ END PCT_RELATORIO_OFICIAL;
 
 CREATE OR REPLACE PACKAGE BODY PCT_RELATORIO_OFICIAL IS
     FUNCTION GERAR_RELATORIO_HABITANTES(V_LIDER LIDER.CPI%TYPE) RETURN VARCHAR2 IS
-        V_SAIDA_RELATORIO VARCHAR2(32767) := 'COMUNIDADE;ESPECIE;PLANETA_ORIGEM;INTELIGENTE;FACCAO;PLANETA_HABITADO;SISTEMA;INICIO_HABITACAO;FIM_HABITACAO' || CHR(10);
+        V_SAIDA_RELATORIO VARCHAR2(32767) := 'PLANETA;COMUNIDADE;ESPECIE;INICIO_HABITACAO;FIM_HABITACAO' || CHR(10);
     BEGIN
-        FOR R IN (
-        
+        BEGIN
+            FOR R IN (
                 SELECT DISTINCT
-                    C.NOME AS COMUNIDADE,
-                    C.ESPECIE AS ESPECIE,
-                    E.PLANETA_OR AS PLANETA_ORIGEM,
-                    E.INTELIGENTE AS INTELIGENTE,
-                    P.FACCAO AS FACCAO,
-                    H.PLANETA AS PLANETA_HABITADO,
-                    S.NOME AS SISTEMA,
+                    D.PLANETA AS PLANETA,
+                    H.COMUNIDADE AS COMUNIDADE,
+                    H.ESPECIE AS ESPECIE,
                     H.DATA_INI AS INICIO_HABITACAO,
                     H.DATA_FIM AS FIM_HABITACAO
                 FROM
-                    PARTICIPA P 
-                    JOIN COMUNIDADE C ON C.ESPECIE = P.ESPECIE AND C.NOME = P.COMUNIDADE
-                    JOIN HABITACAO H ON H.ESPECIE = C.ESPECIE AND H.COMUNIDADE = C.NOME
-                    JOIN ESPECIE E ON E.NOME = C.ESPECIE
-                    JOIN ORBITA_PLANETA OP ON OP.PLANETA = H.PLANETA
-                    JOIN SISTEMA S ON S.ESTRELA = OP.ESTRELA
-                ORDER BY 
-                    C.NOME, C.ESPECIE, P.FACCAO, H.PLANETA, H.DATA_INI, H.DATA_FIM
-                    ) LOOP
-                    
-            V_SAIDA_RELATORIO := V_SAIDA_RELATORIO || R.COMUNIDADE || ';' || R.ESPECIE || ';' 
-                                || R.PLANETA_ORIGEM || ';' || R.INTELIGENTE || ';' || R.FACCAO || ';' 
-                                || R.PLANETA_HABITADO || ';' || R.SISTEMA || ';' || R.INICIO_HABITACAO || ';' 
-                                || R.FIM_HABITACAO || CHR(10);
-        END LOOP;
-        
+                    DOMINANCIA D
+                    LEFT JOIN HABITACAO H ON H.PLANETA = D.PLANETA
+                    JOIN COMUNIDADE C ON C.ESPECIE = H.ESPECIE AND C.NOME = H.COMUNIDADE
+                WHERE D.NACAO = (SELECT NACAO FROM LIDER WHERE CPI = V_LIDER)
+                ORDER BY PLANETA, COMUNIDADE, ESPECIE, FIM_HABITACAO DESC
+            ) LOOP
+                V_SAIDA_RELATORIO := V_SAIDA_RELATORIO || R.PLANETA || ';' || R.COMUNIDADE || ';' 
+                                    || R.ESPECIE || ';' || R.INICIO_HABITACAO || ';' || R.FIM_HABITACAO || CHR(10);
+            END LOOP;
+        EXCEPTION
+            WHEN NO_DATA_FOUND THEN
+                V_SAIDA_RELATORIO := 'Nenhum dado encontrado';
+            WHEN OTHERS THEN
+                V_SAIDA_RELATORIO := 'Erro ao gerar relatorio';
+        END;
+
         RETURN V_SAIDA_RELATORIO;
     END GERAR_RELATORIO_HABITANTES;
 END PCT_RELATORIO_OFICIAL;
+
 
 
 /* EXEMPLO DE CHAMADA DA FUNCAO
@@ -51,4 +48,3 @@ BEGIN
 END;
 
 */
-          
