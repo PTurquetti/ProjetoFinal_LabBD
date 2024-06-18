@@ -32,6 +32,11 @@ CREATE OR REPLACE PACKAGE BODY PCT_RELATORIO_LIDER IS
         ) LOOP
             V_SAIDA_RELATORIO := V_SAIDA_RELATORIO || R.COMUNIDADE || ';' || R.ESPECIE || ';' || R.PLANETA_HABITADO || ';' || R.FACCAO || ';' || R.NACAO || CHR(10);
         END LOOP;
+    EXCEPTION
+            WHEN NO_DATA_FOUND THEN
+                V_SAIDA_RELATORIO := 'Nenhum dado encontrado';
+            WHEN OTHERS THEN
+                V_SAIDA_RELATORIO := 'Erro ao gerar relatório';
         
         RETURN V_SAIDA_RELATORIO;
     END GERAR_RELATORIO_COMUNIDADES;
