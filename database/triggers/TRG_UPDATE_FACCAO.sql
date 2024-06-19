@@ -1,4 +1,4 @@
-CREATE OR REPLACE TRIGGER trg_update_faccao
+create or replace trigger trg_update_faccao
 BEFORE UPDATE OF NOME ON FACCAO
 FOR EACH ROW
 BEGIN
