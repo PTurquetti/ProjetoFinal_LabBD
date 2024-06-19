@@ -27,72 +27,100 @@ def show_home(db_controller, id_user, user_name, access_level, nacao, cpi, facca
     l1.pack()  # Pack the label
     
     # Área de informações de overview
-    frame = customtkinter.CTkFrame(master=l1, width=824, height=500, corner_radius=36)  # Create a frame with rounded corners
+    frame = customtkinter.CTkFrame(master=l1, width=1000, height=750, corner_radius=36)  # Create a frame with rounded corners
     frame.place(relx=0.5, rely=0.5, anchor=tkinter.CENTER) # Place the frame in the center of the label
 
     # Greetings to the authenticaded user
-    hl2 = customtkinter.CTkLabel(master=frame, text=f"Bem-vindo, {user_name}", font=("Garamond", 20))
-    hl2.place(relx=0.5, rely=0.12, anchor=tkinter.CENTER)
+    hl2 = customtkinter.CTkLabel(master=frame, text=f"Bem-vindo, {user_name}", font=("Garamond", 18))
+    hl2.place(relx=0.5, rely=0.10, anchor=tkinter.CENTER)
 
-    hl3 = customtkinter.CTkLabel(master=frame, text=f"Aqui está o que você pode fazer como, {access_level} da nação {nacao}" , font=("Garamond", 18), wraplength=500)
-    hl3.place(relx=0.5, rely=0.18, anchor=tkinter.CENTER)
+    txt_hl3 = f"Aqui está o que você pode fazer como {access_level[0]} da nação {nacao}"
+    txt_hl3 += f" e líder da facção {faccao}" if faccao else ""
+    hl3 = customtkinter.CTkLabel(master=frame, text= txt_hl3, font=("Garamond", 16), wraplength=500)
+    hl3.place(relx=0.5, rely=0.15, anchor=tkinter.CENTER)
 
     frame2 = customtkinter.CTkFrame(master=frame, width=550, height=300, corner_radius=36)  # Create a frame with rounded corners
     frame2.place(relx=0.64, rely=0.53, anchor=tkinter.CENTER) # Place the frame in the center of the label
 
     # TODO Decidir que tipo de informação de overview será exibida
-    hl2 = customtkinter.CTkLabel(master=frame2, text="Selecione o que gostaria de fazer ao lado.", font=("Garamond", 16))
+    hl2 = customtkinter.CTkLabel(master=frame2, text="Selecione o que gostaria de fazer ao lado.", font=("Garamond", 12))
     hl2.place(relx=0.5, rely=0.5, anchor="center")
 
-
-    if access_level == "LIDER":
-        # Funções específicas para Líder de facção
-        func1_button = customtkinter.CTkButton(master=frame, text="Alterar nome da facção", width=200, height=40, command=lambda: lider_help.alter_faction_name(frame))
-        func1_button.place(relx=0.15, rely=0.34, anchor=tkinter.CENTER)
-        
-        func2_button = customtkinter.CTkButton(master=frame, text="Indicar novo líder", width=200, height=40, command=lambda: lider_help.indicar_novo_lider(frame))
-        func2_button.place(relx=0.15, rely=0.46, anchor=tkinter.CENTER)
-        
-        func3_button = customtkinter.CTkButton(master=frame, text="Credenciar novas comunidades", width=200, height=40, command=lambda: lider_help.credenciar_nova_comunidade(frame))
-        func3_button.place(relx=0.15, rely=0.58, anchor=tkinter.CENTER)
-        
-        func4_button = customtkinter.CTkButton(master=frame, text=f"Remover facção de {nacao}", width=200, height=40, command=lambda: lider_help.remover_faccao_nacao(frame))
-        func4_button.place(relx=0.15, rely=0.7, anchor=tkinter.CENTER)
-
-    elif access_level == "OFICIAL":
+    if "OFICIAL" in access_level:
         # Funções específicas para Oficial
-        # ele n tem? só overview TODO qq eu faço no oficial então?
-        hl2 = customtkinter.CTkLabel(master=frame2, text="Decidir o que colocar para o oficial", font=("Garamond", 16))
-        hl2.place(relx=0.5, rely=0.6, anchor="center")    
+        # hl2 = customtkinter.CTkLabel(master=frame2, text="Decidir o que colocar para o oficial", font=("Garamond", 16))
+        # hl2.place(relx=0.5, rely=0.6, anchor="center")    
 
-    elif access_level == "COMANDANTE":
+        # Funções específicas para Líder de facção
+        if "LIDER" in access_level:
+            func1_button = customtkinter.CTkButton(master=frame, text="Alterar nome da facção", width=200, height=40, command=lambda: lider_help.alter_faction_name(frame))
+            func1_button.place(relx=0.15, rely=0.28, anchor=tkinter.CENTER)
+            
+            func2_button = customtkinter.CTkButton(master=frame, text="Indicar novo líder", width=200, height=40, command=lambda: lider_help.indicar_novo_lider(frame))
+            func2_button.place(relx=0.15, rely=0.36, anchor=tkinter.CENTER)
+           
+            func3_button = customtkinter.CTkButton(master=frame, text="Credenciar novas comunidades", width=200, height=40, command=lambda: lider_help.credenciar_nova_comunidade(frame))
+            func3_button.place(relx=0.15, rely=0.44, anchor=tkinter.CENTER)
+            
+            func4_button = customtkinter.CTkButton(master=frame, text=f"Remover facção de nação", width=200, height=40, command=lambda: lider_help.remover_faccao_nacao(frame))
+            func4_button.place(relx=0.15, rely=0.52, anchor=tkinter.CENTER)
+
+
+    elif "COMANDANTE" in access_level:
         # Funções específicas para Comandante
         func1_button = customtkinter.CTkButton(master=frame, text="Incluir nação em uma federação", width=200, height=40, command=lambda: comandante_help.incluir_nacao_federacao(frame))
-        func1_button.place(relx=0.15, rely=0.34, anchor=tkinter.CENTER)
+        func1_button.place(relx=0.15, rely=0.28, anchor=tkinter.CENTER)
 
         func2_button = customtkinter.CTkButton(master=frame, text="Excluir nação de uma federação", width=200, height=40, command=lambda: comandante_help.excluir_nacao_federacao(frame))
-        func2_button.place(relx=0.15, rely=0.46, anchor=tkinter.CENTER)
+        func2_button.place(relx=0.15, rely=0.36, anchor=tkinter.CENTER)
         
         func3_button = customtkinter.CTkButton(master=frame, text="Criar nova federação na nação", width=200, height=40, command=lambda: comandante_help.criar_nova_federacao(frame))
-        func3_button.place(relx=0.15, rely=0.58, anchor=tkinter.CENTER)
+        func3_button.place(relx=0.15, rely=0.44, anchor=tkinter.CENTER)
 
         func4_button = customtkinter.CTkButton(master=frame, text="Inserir dominância em planeta", width=200, height=40, command=lambda: comandante_help.inserir_dominancia_planeta(frame))
-        func4_button.place(relx=0.15, rely=0.7, anchor=tkinter.CENTER)
+        func4_button.place(relx=0.15, rely=0.52, anchor=tkinter.CENTER)
 
-    elif access_level == "CIENTISTA":
+        if "LIDER" in access_level:
+            func5_button = customtkinter.CTkButton(master=frame, text="Alterar nome da facção", width=200, height=40, command=lambda: lider_help.alter_faction_name(frame))
+            func5_button.place(relx=0.15, rely=0.60, anchor=tkinter.CENTER)
+            
+            func6_button = customtkinter.CTkButton(master=frame, text="Indicar novo líder", width=200, height=40, command=lambda: lider_help.indicar_novo_lider(frame))
+            func6_button.place(relx=0.15, rely=0.68, anchor=tkinter.CENTER)
+            
+            func7_button = customtkinter.CTkButton(master=frame, text="Credenciar novas comunidades", width=200, height=40, command=lambda: lider_help.credenciar_nova_comunidade(frame))
+            func7_button.place(relx=0.15, rely=0.76, anchor=tkinter.CENTER)
+            
+            func8_button = customtkinter.CTkButton(master=frame, text=f"Remover facção de nação", width=200, height=40, command=lambda: lider_help.remover_faccao_nacao(frame))
+            func8_button.place(relx=0.15, rely=0.84, anchor=tkinter.CENTER)
+            
+            
+    elif "CIENTISTA" in access_level:
         # Funções específicas para cientista
         func1_button = customtkinter.CTkButton(master=frame, text="Inserir nova estrela", width=200, height=40, command=lambda: cientista_help.inserir_nova_estrela(frame))
-        func1_button.place(relx=0.15, rely=0.34, anchor=tkinter.CENTER)
+        func1_button.place(relx=0.15, rely=0.28, anchor=tkinter.CENTER)
 
         # Funções específicas para Comandante
         func2_button = customtkinter.CTkButton(master=frame, text="Ver informações sobre uma estrela", width=200, height=40, command=lambda: cientista_help.ver_informacoes_estrela(frame))
-        func2_button.place(relx=0.15, rely=0.46, anchor=tkinter.CENTER)
+        func2_button.place(relx=0.15, rely=0.36, anchor=tkinter.CENTER)
         
         func3_button = customtkinter.CTkButton(master=frame, text="Atualizar estrela", width=200, height=40, command=lambda: cientista_help.atualizar_estrela(frame))
-        func3_button.place(relx=0.15, rely=0.58, anchor=tkinter.CENTER)
+        func3_button.place(relx=0.15, rely=0.44, anchor=tkinter.CENTER)
 
         func4_button = customtkinter.CTkButton(master=frame, text="Deletar estrela", width=200, height=40, command=lambda: cientista_help.remover_estrela(frame))
-        func4_button.place(relx=0.15, rely=0.7, anchor=tkinter.CENTER)
+        func4_button.place(relx=0.15, rely=0.52, anchor=tkinter.CENTER)
+
+        if "LIDER" in access_level:
+            func5_button = customtkinter.CTkButton(master=frame, text="Alterar nome da facção", width=200, height=40, command=lambda: lider_help.alter_faction_name(frame))
+            func5_button.place(relx=0.15, rely=0.6, anchor=tkinter.CENTER)
+            
+            func6_button = customtkinter.CTkButton(master=frame, text="Indicar novo líder", width=200, height=40, command=lambda: lider_help.indicar_novo_lider(frame))
+            func6_button.place(relx=0.15, rely=0.68, anchor=tkinter.CENTER)
+            
+            func7_button = customtkinter.CTkButton(master=frame, text="Credenciar novas comunidades", width=200, height=40, command=lambda: lider_help.credenciar_nova_comunidade(frame))
+            func7_button.place(relx=0.15, rely=0.76, anchor=tkinter.CENTER)
+            
+            func8_button = customtkinter.CTkButton(master=frame, text=f"Remover facção de nação", width=200, height=40, command=lambda: lider_help.remover_faccao_nacao(frame))
+            func8_button.place(relx=0.15, rely=0.84, anchor=tkinter.CENTER)
 
     # Relatório
     button1 = customtkinter.CTkButton(master=frame, text="Gerar relatório", width=200, height=40)
