@@ -1,122 +1,195 @@
 -- Declaração de pacote de relatório para cientistas
 CREATE OR REPLACE PACKAGE PCT_RELATORIO_CIENTISTA AS
-    -- Tipos de coleções que serão guardados os resultados
-    TYPE t_tab_estrelas IS TABLE OF estrela%ROWTYPE;
-    TYPE t_tab_planetas IS TABLE OF planeta%ROWTYPE;
-    TYPE t_sistemas IS RECORD (nome sistema.nome%TYPE);
-    TYPE t_tab_sistemas IS TABLE OF t_sistemas;
- 
-    -- Encontra todas as estrelas e adiciona em uma coleção
-    PROCEDURE search_estrela(
-        t_tab_estrelas_out OUT t_tab_estrelas
-    );
-
-    -- Encontra todos os planetas e adiciona em uma coleção
-    PROCEDURE search_planeta(
-        t_tab_planetas_out OUT t_tab_planetas
-    );
-
-    -- Encontra o nome do sistema, as estrelas e os planetas que orbitam uma estrela especificada
-    PROCEDURE search_sistema_por_estrela_orbitada(
-        p_estrela estrela.id_estrela%TYPE,
-        p_nome_sistema OUT sistema.nome%TYPE,
-        t_tab_estrelas_out OUT t_tab_estrelas,
-        t_tab_planetas_out OUT t_tab_planetas
-    );
-
-    -- Encontra o nome de todos os sistemas que essa estrela faz parte (ver se ela orbita alguma outra estrela e ver se essa outra estrela tem um sistema)
-    PROCEDURE search_sistema_por_orbitante(
-        p_estrela estrela.id_estrela%TYPE,
-        t_tab_sistemas_out OUT t_tab_sistemas
-    );
+    FUNCTION GERAR_RELATORIO_INFOS_ESTRELAS(P_CPI_CIENTISTA LIDER.CPI%TYPE, P_LINHA_INICIO NUMBER) RETURN VARCHAR2;
+    FUNCTION GERAR_RELATORIO_INFOS_PLANETAS(P_CPI_CIENTISTA LIDER.CPI%TYPE, P_LINHA_INICIO NUMBER) RETURN VARCHAR2;
 END PCT_RELATORIO_CIENTISTA;
 /
+
+
+
 
 -- Corpo do pacote de relatório para cientistas
 CREATE OR REPLACE PACKAGE BODY PCT_RELATORIO_CIENTISTA AS
-    -- Busca de todas as estrelas
-    PROCEDURE search_estrela(
-        t_tab_estrelas_out OUT t_tab_estrelas
-    ) AS
-    CURSOR c_estrela IS
-        SELECT * FROM ESTRELA;
+    
+    FUNCTION GERAR_RELATORIO_INFOS_ESTRELAS(P_CPI_CIENTISTA LIDER.CPI%TYPE, P_LINHA_INICIO NUMBER) RETURN VARCHAR2 IS
+        V_SAIDA_RELATORIO VARCHAR2(32767);
+        V_ATRIBUTOS_LIDER LIDER%ROWTYPE;
+        V_NUMERO_LINHA NUMBER := 0;
+        V_QTD_LINHAS NUMBER := 0;
+        V_BUFFER VARCHAR2(32767);
+        V_LIMITE_PAGINA CONSTANT NUMBER := 100;  -- Tamanho máximo de linhas por página
+
     BEGIN
-        t_tab_estrelas_out := t_tab_estrelas();
-        -- Adição de todas as estrelas na coleção
-        FOR v_linha IN c_estrela LOOP
-            t_tab_estrelas_out.extend();  -- aumenta um espaço no vetor
-            t_tab_estrelas_out(t_tab_estrelas_out.COUNT) := v_linha;  -- adiciona a linha na nova posição (última)
-        END LOOP;
-    END search_estrela;
+    
+        -- Validação do cientista
+        BEGIN
+            SELECT * INTO V_ATRIBUTOS_LIDER FROM LIDER WHERE CPI = P_CPI_CIENTISTA;
+        EXCEPTION
+            WHEN NO_DATA_FOUND THEN
+                RAISE_APPLICATION_ERROR(-20000, 'Cientista não encontrado.');
+        END;
 
-    -- Busca de todos os planetas
-    PROCEDURE search_planeta(
-        t_tab_planetas_out OUT t_tab_planetas
-    ) AS
-    CURSOR c_planeta IS
-        SELECT * FROM PLANETA;
+        IF TRIM(V_ATRIBUTOS_LIDER.CARGO) <> 'CIENTISTA' THEN
+            RAISE_APPLICATION_ERROR(-20000, 'O líder informado não é um cientista.');
+        END IF;
+        
+        --cabeçalho do relatório
+        IF P_LINHA_INICIO = 1 THEN
+            V_SAIDA_RELATORIO := 'SISTEMA;ID_ESTRELA;NOME_ESTRELA;CLASSIFICACAO;MASSA;COORD_X;COORD_Y;COORD_Z;QTD_PLANETAS_ORBITANTES;ORBITA_ESTRELA' || CHR(10);
+        ELSE
+            V_SAIDA_RELATORIO := '';
+        END IF;
+
+        -- Query para buscar os dados
+        FOR R IN (
+            SELECT 
+                S.NOME AS SISTEMA,
+                E.ID_ESTRELA AS ID_ESTRELA,
+                E.NOME AS NOME_ESTRELA,
+                E.CLASSIFICACAO AS CLASSIFICACAO,
+                E.MASSA AS MASSA,
+                E.X AS COORD_X,
+                E.Y AS COORD_Y,
+                E.Z AS COORD_Z,
+                COUNT(OP.PLANETA) AS QTD_PLANETAS_ORBITANTES,
+                OE.ORBITADA AS ORBITA_ESTRELA
+            FROM
+                SISTEMA S 
+                RIGHT JOIN ESTRELA E ON S.ESTRELA = E.ID_ESTRELA
+                LEFT JOIN ORBITA_PLANETA OP ON OP.ESTRELA = E.ID_ESTRELA
+                LEFT JOIN ORBITA_ESTRELA OE ON OE.ORBITANTE = E.ID_ESTRELA
+            GROUP BY S.NOME, E.ID_ESTRELA, E.NOME, E.CLASSIFICACAO, E.MASSA, E.X, E.Y, E.Z, OE.ORBITADA
+            ORDER BY S.NOME, E.ID_ESTRELA  -- Garantir ordenação consistente para a paginação
+        ) LOOP
+            V_NUMERO_LINHA := V_NUMERO_LINHA + 1;
+            
+            -- Pula as linhas até atingir o início da página desejada
+            IF V_NUMERO_LINHA <= P_LINHA_INICIO THEN
+                CONTINUE;
+            END IF;
+            
+            -- Constrói a linha do relatório
+            V_BUFFER := R.SISTEMA || ';' || R.ID_ESTRELA || ';' || R.NOME_ESTRELA || ';' || R.CLASSIFICACAO || ';' || R.MASSA ||  ';' || R.COORD_X || ';' || R.COORD_Y || ';' || R.COORD_Z || ';' || R.QTD_PLANETAS_ORBITANTES || ';' || R.ORBITA_ESTRELA || CHR(10);
+
+            -- Verifica se excedeu o limite da página
+            IF V_QTD_LINHAS >= V_LIMITE_PAGINA THEN
+                EXIT; -- Sai do loop se atingir o limite da página
+            END IF;
+
+            -- Adiciona a linha ao relatório
+            V_SAIDA_RELATORIO := V_SAIDA_RELATORIO || V_BUFFER;
+            V_QTD_LINHAS := V_QTD_LINHAS + 1;
+        END LOOP;
+        
+        RETURN V_SAIDA_RELATORIO;
+        
+    EXCEPTION
+        WHEN NO_DATA_FOUND THEN
+            RETURN 'Nenhum dado encontrado';
+        WHEN OTHERS THEN
+            RETURN 'Erro ao gerar relatório: ' || SQLERRM;
+    END GERAR_RELATORIO_INFOS_ESTRELAS;
+
+
+    FUNCTION GERAR_RELATORIO_INFOS_PLANETAS(P_CPI_CIENTISTA LIDER.CPI%TYPE, P_LINHA_INICIO NUMBER) RETURN VARCHAR2 IS
+        V_SAIDA_RELATORIO VARCHAR2(32767);
+        V_ATRIBUTOS_LIDER LIDER%ROWTYPE;
+        V_NUMERO_LINHA NUMBER := 0;
+        V_QTD_LINHAS NUMBER := 0;
+        V_BUFFER VARCHAR2(32767);
+        V_LIMITE_PAGINA CONSTANT NUMBER := 100;  -- Tamanho máximo de linhas por página
+
     BEGIN
-        t_tab_planetas_out := t_tab_planetas();
-        -- Adição de todos os planetas na coleção
-        FOR v_linha IN c_planeta LOOP
-            t_tab_planetas_out.extend();
-            t_tab_planetas_out (t_tab_planetas_out.COUNT) := v_linha;
+    
+        -- Validação do cientista
+        BEGIN
+            SELECT * INTO V_ATRIBUTOS_LIDER FROM LIDER WHERE CPI = P_CPI_CIENTISTA;
+        EXCEPTION
+            WHEN NO_DATA_FOUND THEN
+                RAISE_APPLICATION_ERROR(-20000, 'Cientista não encontrado.');
+        END;
+
+        IF TRIM(V_ATRIBUTOS_LIDER.CARGO) <> 'CIENTISTA' THEN
+            RAISE_APPLICATION_ERROR(-20000, 'O líder informado não é um cientista.');
+        END IF;
+        
+        --cabeçalho do relatório
+        IF P_LINHA_INICIO = 1 THEN
+            V_SAIDA_RELATORIO := 'PLANETA;MASSA;RAIO;CLASSIFICACAO;ESTRELA_ORBITADA;DIST_MIN_ORBITA;DIST_MAX_ORBITA;PERIODO_ORBITA' || CHR(10);
+        ELSE
+            V_SAIDA_RELATORIO := '';
+        END IF;
+
+        -- Query para buscar os dados
+        FOR R IN (
+            SELECT 
+                P.ID_ASTRO AS PLANETA,
+                P.MASSA AS MASSA,
+                P.RAIO AS RAIO,
+                P.CLASSIFICACAO AS CLASSIFICACAO,
+                OP.ESTRELA AS ESTRELA_ORBITADA,
+                OP.DIST_MIN AS DIST_MIN_ORBITA,
+                OP.DIST_MAX AS DIST_MAX_ORBTIA,
+                OP.PERIODO AS PERIODO_ORBITA
+            FROM
+                PLANETA P 
+                LEFT JOIN ORBITA_PLANETA OP ON OP.PLANETA = P.ID_ASTRO
+            ORDER BY P.ID_ASTRO 
+        ) LOOP
+            V_NUMERO_LINHA := V_NUMERO_LINHA + 1;
+            
+            -- Pula as linhas até atingir o início da página desejada
+            IF V_NUMERO_LINHA <= P_LINHA_INICIO THEN
+                CONTINUE;
+            END IF;
+            
+            -- Constrói a linha do relatório
+            V_BUFFER := R.PLANETA || ';' || R.MASSA || ';' || R.RAIO || ';' || R.CLASSIFICACAO || ';' || R.ESTRELA_ORBITADA ||  ';' || R.DIST_MIN_ORBITA || ';' || R.DIST_MAX_ORBTIA || ';' || R.PERIODO_ORBITA || CHR(10);
+
+            -- Verifica se excedeu o limite da página
+            IF V_QTD_LINHAS >= V_LIMITE_PAGINA THEN
+                EXIT; -- Sai do loop se atingir o limite da página
+            END IF;
+
+            -- Adiciona a linha ao relatório
+            V_SAIDA_RELATORIO := V_SAIDA_RELATORIO || V_BUFFER;
+            V_QTD_LINHAS := V_QTD_LINHAS + 1;
         END LOOP;
-    END search_planeta;
+        
+        RETURN V_SAIDA_RELATORIO;
+        
+    EXCEPTION
+        WHEN NO_DATA_FOUND THEN
+            RETURN 'Nenhum dado encontrado';
+        WHEN OTHERS THEN
+            RETURN 'Erro ao gerar relatório: ' || SQLERRM;
+    END GERAR_RELATORIO_INFOS_PLANETAS;
 
-    -- Busca do sistema, planetas e estrelas que orbitam uma estrela
-    PROCEDURE search_sistema_por_estrela_orbitada(
-        p_estrela estrela.id_estrela%TYPE,
-        p_nome_sistema OUT sistema.nome%TYPE,
-        t_tab_estrelas_out OUT t_tab_estrelas,
-        t_tab_planetas_out OUT t_tab_planetas
-    ) AS
-        CURSOR c_estrela IS
-            SELECT e.id_estrela, e.nome, e.classificacao, e.massa, e.x, e.y, e.z
-            FROM orbita_estrela o JOIN estrela e ON o.orbitante = e.id_estrela
-            WHERE o.orbitada = p_estrela;
-        CURSOR c_planeta IS
-            SELECT p.id_astro, p.massa, p.raio, p.classificacao
-            FROM orbita_planeta o JOIN planeta p ON o.planeta = p.id_astro
-            WHERE o.estrela = p_estrela;
-    BEGIN
-        -- Inicialização das coleções
-        t_tab_estrelas_out := t_tab_estrelas();
-        t_tab_planetas_out := t_tab_planetas();
-
-        -- Busca do sistema que a estrela faz parte
-        SELECT s.nome INTO p_nome_sistema FROM sistema s WHERE s.estrela = p_estrela;
-
-        -- Adição das estrelas que orbitam a estrela
-        FOR v_linha IN c_estrela LOOP
-            t_tab_estrelas_out.extend();
-            t_tab_estrelas_out (t_tab_estrelas_out.COUNT) := v_linha;
-        END LOOP;
-
-        -- Adição dos planetas que orbitam a estrela
-        FOR v_linha IN c_planeta LOOP
-            t_tab_planetas_out.extend();
-            t_tab_planetas_out(t_tab_planetas_out.COUNT) := v_linha;
-        END LOOP;
-    END search_sistema_por_estrela_orbitada;
-
-    -- Busca dos sistemas que uma estrela orbitante faz parte
-    PROCEDURE search_sistema_por_orbitante(
-        p_estrela estrela.id_estrela%TYPE,
-        t_tab_sistemas_out OUT t_tab_sistemas
-    ) IS
-        CURSOR c_sistema IS
-            SELECT s.nome AS nome
-            FROM orbita_estrela o JOIN sistema s ON s.estrela = o.orbitada
-            WHERE o.orbitante = p_estrela;
-    BEGIN
-        t_tab_sistemas_out := t_tab_sistemas();
-
-        -- Adição dos sistemas que a estrela faz parte
-        FOR v_sis IN c_sistema LOOP
-            t_tab_sistemas_out.EXTEND();
-            t_tab_sistemas_out(t_tab_sistemas_out.COUNT) := t_sistemas(v_sis.nome);
-        END LOOP;
-    END search_sistema_por_orbitante;
 END PCT_RELATORIO_CIENTISTA;
 /
+
+
+
+
+/* CHAMADA DA FUNCAO (EXEMPLO)
+
+DECLARE
+    V_CPI_CIENTISTA LIDER.CPI%TYPE := '111.111.111-11';  -- Substitua pelo CPI do cientista desejado
+    V_LINHA_INICIO NUMBER := 1;  -- Número da linha de início para paginação
+
+    V_RELATORIO VARCHAR2(32767);
+BEGIN
+    -- Chamada da função do pacote PCT_RELATORIO_CIENTISTA
+    V_RELATORIO := PCT_RELATORIO_CIENTISTA.GERAR_RELATORIO_INFOS_PLANETAS(V_CPI_CIENTISTA, V_LINHA_INICIO);
+    
+    -- Exibir o relatório gerado (pode ser substituído por qualquer uso desejado, como salvar em arquivo ou mostrar em um aplicativo)
+    DBMS_OUTPUT.PUT_LINE(V_RELATORIO);
+EXCEPTION
+    WHEN OTHERS THEN
+        DBMS_OUTPUT.PUT_LINE('Erro ao gerar relatório: ' || SQLERRM);
+END;
+
+/
+
+
+*/
