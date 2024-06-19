@@ -1,6 +1,70 @@
 import customtkinter
 import tkinter
+from oracledb.exceptions import DatabaseError
 
+def show_popup(message):
+        popup = tkinter.Toplevel()
+        popup.geometry('300x100')  # Set the size of the popup window
+        popup.title('Popup Message')
+        
+        popup.configure(bg='#202845')  # Dark blue background color
+        label = tkinter.Label(popup, text=message, padx=20, pady=20, fg='white', bg='#202845', font=('Garamond', 12))
+        label.pack()
+        
+        # Center the popup window
+        popup.update_idletasks()
+        width = popup.winfo_width()
+        height = popup.winfo_height()
+        x = (popup.winfo_screenwidth() // 2) - (width // 2)
+        y = (popup.winfo_screenheight() // 2) - (height // 2)
+        popup.geometry('{}x{}+{}+{}'.format(width, height, x, y))
+        
+        # Automatically close the popup after 3000 milliseconds (3 seconds)
+        popup.after(25000, popup.destroy)
+        
+        popup.mainloop()
+
+def alterar_nome(db_controller, cpi, novo_nome):
+        try:
+                info_funcao = db_controller.call_function('PCT_GERENCIAMENTO_LIDER.alterar_nome_faccao', [cpi, novo_nome], str)
+                show_popup(info_funcao)
+        except DatabaseError as ex:
+                error, = ex.args
+                if error.code == 20000:  # erro lógico 
+                        msg_erro = error.message.split(':')[1][:-10].strip()
+                        show_popup(msg_erro)
+                        print('Erro do usuário:', msg_erro)
+                else:
+                        show_popup('Erro da base de dados (olhar log)')
+                        print('Erro da base de dados:', error.code, error.message)
+
+def indica_lider(db_controller, cpi, novo_lider):
+        try:
+                info_funcao = db_controller.call_function('PCT_GERENCIAMENTO_LIDER.indica_lider', [cpi, novo_lider], str)
+                show_popup(info_funcao)
+        except DatabaseError as ex:
+                error, = ex.args
+                if error.code == 20000:  # erro lógico 
+                        msg_erro = error.message.split(':')[1][:-10].strip()
+                        show_popup(msg_erro)
+                        print('Erro do usuário:', msg_erro)
+                else:
+                        show_popup('Erro da base de dados (olhar log)')
+                        print('Erro da base de dados:', error.code, error.message)
+
+def insere_com(db_controller, cpi, especie, nome):
+        try:
+                info_funcao = db_controller.call_function('PCT_GERENCIAMENTO_LIDER.credenciar_comunidade', [cpi, especie, nome], str)
+                show_popup(info_funcao)
+        except DatabaseError as ex:
+                error, = ex.args
+                if error.code == 20000:  # erro lógico 
+                        msg_erro = error.message.split(':')[1][:-10].strip()
+                        show_popup(msg_erro)
+                        print('Erro do usuário:', msg_erro)
+                else:
+                        show_popup('Erro da base de dados (olhar log)')
+                        print('Erro da base de dados:', error.code, error.message)
 
 def alter_faction_name(frame):
         # TODO: Implementar a conexão com o banco de dados para alterar o nome da facção
