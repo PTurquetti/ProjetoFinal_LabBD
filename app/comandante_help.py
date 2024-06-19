@@ -54,6 +54,21 @@ def exclui_fac_nac(db_controller, cpi):
                 else:
                         show_popup('Erro da base de dados (olhar log)')
                         print('Erro da base de dados:', error.code, error.message)
+
+def insere_dom(db_controller, cpi, planeta):
+        try:
+                info_funcao = db_controller.call_function('PCT_GERENCIAMENTO_COMANDANTE.insere_dominancia', [cpi, planeta], str)
+                show_popup(info_funcao)
+                db_controller.commit()
+        except DatabaseError as ex:
+                error, = ex.args
+                if error.code == 20000:  # erro lógico 
+                        msg_erro = error.message.split(':')[1][:-10].strip()
+                        show_popup(msg_erro)
+                        print('Erro do usuário:', msg_erro)
+                else:
+                        show_popup('Erro da base de dados (olhar log)')
+                        print('Erro da base de dados:', error.code, error.message)
                         
 def incluir_nacao_federacao(frame, db_controller, cpi):
         # TODO: Implementar a conexão com o banco de dados para incluir a nação na federação
@@ -107,7 +122,7 @@ def inserir_dominancia_planeta(frame, db_controller, cpi):
         tNovoNome = customtkinter.CTkLabel(master=frame3, text="Insira o planeta ao qual você deseja inserir dominância", font=("Garamond", 16))
         tNovoNome.place(relx=0.5, rely=0.35, anchor="center")
 
-        entryFName = customtkinter.CTkEntry(master=frame3, placeholder_text="Planeta", height=40, width=350, corner_radius=32)  # Create an entry with a placeholder
+        entryFName = customtkinter.CTkEntry(master=frame3, placeholder_text="Planeta", height=40, width=350, corner_radius=32, command=lambda: insere_dom(db_controller, cpi, entryFName.get())  # Create an entry with a placeholder
         entryFName.place(relx=0.5, rely=0.5, anchor=tkinter.CENTER)  # Place the entry in the center of the frame
         
         buttonFName = customtkinter.CTkButton(master=frame3, text="Confirmar", width=200, height=40, corner_radius=32)
