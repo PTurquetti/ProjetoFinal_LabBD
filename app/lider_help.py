@@ -28,6 +28,7 @@ def alterar_nome(db_controller, cpi, novo_nome):
         try:
                 info_funcao = db_controller.call_function('PCT_GERENCIAMENTO_LIDER.alterar_nome_faccao', [cpi, novo_nome], str)
                 show_popup(info_funcao)
+                db_controller.commit()
         except DatabaseError as ex:
                 error, = ex.args
                 if error.code == 20000:  # erro lógico 
@@ -42,6 +43,7 @@ def indica_lider(db_controller, cpi, novo_lider):
         try:
                 info_funcao = db_controller.call_function('PCT_GERENCIAMENTO_LIDER.indica_lider', [cpi, novo_lider], str)
                 show_popup(info_funcao)
+                db_controller.commit()
         except DatabaseError as ex:
                 error, = ex.args
                 if error.code == 20000:  # erro lógico 
@@ -56,6 +58,7 @@ def insere_com(db_controller, cpi, especie, nome):
         try:
                 info_funcao = db_controller.call_function('PCT_GERENCIAMENTO_LIDER.credenciar_comunidade', [cpi, especie, nome], str)
                 show_popup(info_funcao)
+                db_controller.commit()
         except DatabaseError as ex:
                 error, = ex.args
                 if error.code == 20000:  # erro lógico 
@@ -81,7 +84,7 @@ def alter_faction_name(frame, db_controller, cpi):
         buttonFName = customtkinter.CTkButton(master=frame3, text="Confirmar", width=200, height=40, corner_radius=32, command=lambda: alterar_nome(db_controller, cpi, entryFName.get()))  # Call the function to change the faction name
         buttonFName.place(relx=0.5, rely=0.7, anchor=tkinter.CENTER)
 
-def indicar_novo_lider(frame):
+def indicar_novo_lider(frame, db_controller, cpi):
         # TODO: Implementar a conexão com o banco de dados para indicar um novo líder
         
         frame3 = customtkinter.CTkFrame(master=frame, width=550, height=300, corner_radius=36)  # Create a frame with rounded corners
@@ -93,10 +96,10 @@ def indicar_novo_lider(frame):
         entryFName = customtkinter.CTkEntry(master=frame3, placeholder_text="Novo líder", height=40, width=350, corner_radius=32)  # Create an entry with a placeholder
         entryFName.place(relx=0.5, rely=0.5, anchor=tkinter.CENTER)  # Place the entry in the center of the frame
         
-        buttonFName = customtkinter.CTkButton(master=frame3, text="Confirmar", width=200, height=40, corner_radius=32)
-        buttonFName.place(relx=0.5, rely=0.7, anchor=tkinter.CENTER)
+        buttonFName = customtkinter.CTkButton(master=frame3, text="Confirmar", width=200, height=40, corner_radius=32, command=lambda: indica_lider(db_controller, cpi, entryFName.get()))
+        buttonFName.place(relx=0.5, rely=0.7, anchor=tkinter.CENTER, )  # Call the function to indicate the new leader
 
-def credenciar_nova_comunidade(frame):
+def credenciar_nova_comunidade(frame, dbcontroller, cpi):
         # TODO: Implementar a conexão com o banco de dados para credenciar a nova comunidade
         
         frame3 = customtkinter.CTkFrame(master=frame, width=550, height=300, corner_radius=36)  # Create a frame with rounded corners
@@ -105,11 +108,14 @@ def credenciar_nova_comunidade(frame):
         tNovoNome = customtkinter.CTkLabel(master=frame3, text="Insira a comunidade a ser credenciada", font=("Garamond", 16), wraplength=500)
         tNovoNome.place(relx=0.5, rely=0.35, anchor="center")
 
-        entryFName = customtkinter.CTkEntry(master=frame3, placeholder_text="Comunidade", height=40, width=350, corner_radius=32)  # Create an entry with a placeholder
+        entryFName = customtkinter.CTkEntry(master=frame3, placeholder_text="Especie", height=40, width=350, corner_radius=32)  # Create an entry with a placeholder
         entryFName.place(relx=0.5, rely=0.5, anchor=tkinter.CENTER)  # Place the entry in the center of the frame
+
+        entryFName2 = customtkinter.CTkEntry(master=frame3, placeholder_text="Comunidade", height=40, width=350, corner_radius=32)  # Create an entry with a placeholder
+        entryFName2.place(relx=0.5, rely=0.65, anchor=tkinter.CENTER)  # Place the entry in the center of the frame
         
-        buttonFName = customtkinter.CTkButton(master=frame3, text="Confirmar", width=200, height=40, corner_radius=32)
-        buttonFName.place(relx=0.5, rely=0.7, anchor=tkinter.CENTER)
+        buttonFName = customtkinter.CTkButton(master=frame3, text="Confirmar", width=200, height=40, corner_radius=32, command=lambda: insere_com(dbcontroller, cpi, entryFName.get(), entryFName2.get()))  # Call the function to accredit the new community
+        buttonFName.place(relx=0.5, rely=0.9, anchor=tkinter.CENTER)
 
 def remover_faccao_nacao(frame):
         # TODO: Implementar a conexão com o banco de dados para remover a facção da nação

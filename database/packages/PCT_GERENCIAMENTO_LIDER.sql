@@ -58,8 +58,8 @@ CREATE OR REPLACE PACKAGE BODY PCT_GERENCIAMENTO_LIDER AS
             RAISE_APPLICATION_ERROR(-20000, 'Usuário não é líder de nenhuma facção.');
         WHEN DUP_VAL_ON_INDEX THEN
             RAISE_APPLICATION_ERROR(-20000, 'Já existe uma facção com esse nome.');
-        WHEN OTHERS THEN
-            RAISE_APPLICATION_ERROR(-20000, 'Não foi possível mudar o nome da facção.');
+        -- WHEN OTHERS THEN
+        --     RAISE_APPLICATION_ERROR(-20000, 'Não foi possível mudar o nome da facção.');
     END alterar_nome_faccao;
 
     FUNCTION indica_lider (
@@ -90,7 +90,7 @@ CREATE OR REPLACE PACKAGE BODY PCT_GERENCIAMENTO_LIDER AS
                 IF SQLCODE = -2291 THEN
                     RAISE_APPLICATION_ERROR(-20000, 'Líder não está cadastrado.');
                 END IF;
-                RAISE_APPLICATION_ERROR(-20000, 'Não foi possível alterar o lider da facção.');
+            --     RAISE_APPLICATION_ERROR(-20000, 'Não foi possível alterar o lider da facção.');
     END indica_lider;
 
     FUNCTION retorna_comunidade_dominada (
@@ -154,8 +154,8 @@ CREATE OR REPLACE PACKAGE BODY PCT_GERENCIAMENTO_LIDER AS
             RAISE_APPLICATION_ERROR(-20000, 'Comunidade já participa dessa facção.');
         WHEN E_COMUNIDADE_INVALIDA THEN
             RAISE_APPLICATION_ERROR(-20000, 'Comunidade não habita um planeta dominado por uma nação que a facção faz parte.');
-        WHEN OTHERS THEN
-            RAISE_APPLICATION_ERROR(-20000, 'Não foi possível credenciar comunidade.');
+        -- WHEN OTHERS THEN
+        --     RAISE_APPLICATION_ERROR(-20000, 'Não foi possível credenciar comunidade.');
     END credenciar_comunidade;
 
     FUNCTION retorna_comunidade_participa_da_nacao (
@@ -193,8 +193,8 @@ CREATE OR REPLACE PACKAGE BODY PCT_GERENCIAMENTO_LIDER AS
             RAISE_APPLICATION_ERROR(-20000, 'Facção já não pertence à nação.');
         WHEN E_USER_NAO_EH_LIDER THEN
             RAISE_APPLICATION_ERROR(-20000, 'Usuário não é líder de nenhuma facção.');
-        WHEN OTHERS THEN
-            RAISE_APPLICATION_ERROR(-20000, 'Não foi possível remover a facção da nação.');
+        -- WHEN OTHERS THEN
+        --     RAISE_APPLICATION_ERROR(-20000, 'Não foi possível remover a facção da nação.');
     END remove_faccao_de_nacao;
     
 END PCT_GERENCIAMENTO_LIDER;

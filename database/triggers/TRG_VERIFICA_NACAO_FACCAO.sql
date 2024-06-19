@@ -1,5 +1,5 @@
 -- Criação de trigger para restrição b) na tabela nacao_faccao
-CREATE OR REPLACE TRIGGER TRG_VERIFICA_NACAO_FACCAO FOR UPDATE OR DELETE ON NACAO_FACCAO COMPOUND TRIGGER
+CREATE OR REPLACE TRIGGER TRG_VERIFICA_NACAO_FACCAO FOR DELETE ON NACAO_FACCAO COMPOUND TRIGGER
     -- Criação de tipo para armazenar os relacionamentos entre nação e facção para líderes de facção
     TYPE T_NACAO_FACCAO IS TABLE OF NACAO_FACCAO%ROWTYPE;
 
