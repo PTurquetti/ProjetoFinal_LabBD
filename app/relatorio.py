@@ -31,7 +31,7 @@ def show_report_page(csv_string):
     # Define the column headings
     for col in df.columns:
         tree.heading(col, text=col)
-        tree.column(col, width=100, anchor=tk.CENTER)
+        tree.column(col, width=200, anchor=tk.CENTER)
 
     # Insert the data into the treeview
     for index, row in df.iterrows():
@@ -47,3 +47,11 @@ def show_report_page(csv_string):
 
     relatorio_window.mainloop()
 
+
+# db_controller = DBController()
+# s = db_controller.call_function('PCT_RELATORIO_COMANDANTE.GERAR_RELATORIO_TODOS_PLANETAS_COMANDANTE', ['265.833.107-42', 1], str)
+# show_report_page(s)
+# s = db_controller.call_function('PCT_RELATORIO_COMANDANTE.GERAR_RELATORIO_PLANETAS_EXPANSAO_COMANDANTE', ['265.833.107-42', 10000, 1], str)
+# show_report_page(s)
+# s = db_controller.call_function('PCT_RELATORIO_COMANDANTE.GERAR_RELATORIO_PLANETAS_NACAO_COMANDANTE', ['265.833.107-42', 1], str)
+# show_report_page(s)
