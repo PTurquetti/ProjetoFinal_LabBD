@@ -7,27 +7,6 @@ import cientista_help
 from login import show_login
 from relatorio import show_report_page
 
-def show_popup(message):
-        popup = tkinter.Toplevel()
-        popup.geometry('300x100')  # Set the size of the popup window
-        popup.title('Popup Message')
-        
-        popup.configure(bg='#202845')  # Dark blue background color
-        label = tkinter.Label(popup, text=message, padx=20, pady=20, fg='white', bg='#202845', font=('Garamond', 12))
-        label.pack()
-        
-        # Center the popup window
-        popup.update_idletasks()
-        width = popup.winfo_width()
-        height = popup.winfo_height()
-        x = (popup.winfo_screenwidth() // 2) - (width // 2)
-        y = (popup.winfo_screenheight() // 2) - (height // 2)
-        popup.geometry('{}x{}+{}+{}'.format(width, height, x, y))
-        
-        popup.after(25000, popup.destroy)
-        
-        popup.mainloop()
-
 def gera_relatorio(db_controller, a, b, c):
     print('ok')
     s = db_controller.call_function(a, b, c)
@@ -93,7 +72,7 @@ def show_home(db_controller, id_user, user_name, access_level, nacao, cpi, facca
             func4_button = customtkinter.CTkButton(master=frame, text=f"Remover facção de nação", width=200, height=40, command=lambda: lider_help.remover_faccao_nacao(frame, db_controller, cpi, faccao))
             func4_button.place(relx=0.15, rely=0.52, anchor=tkinter.CENTER)
 
-            button2 = customtkinter.CTkButton(master=frame, text="Relatório de Facção", width=200, height=40, command=lambda: gera_relatorio('PCT_RELATORIO_LIDER.GERAR_RELATORIO_COMUNIDADES', [cpi], str))
+            button2 = customtkinter.CTkButton(master=frame, text="Relatório de Facção", width=200, height=40, command=lambda: gera_relatorio(db_controller, 'PCT_RELATORIO_LIDER.GERAR_RELATORIO_COMUNIDADES', [cpi], str))
             button2.place(relx=0.51, rely=0.85, anchor=tkinter.CENTER)
 
 
