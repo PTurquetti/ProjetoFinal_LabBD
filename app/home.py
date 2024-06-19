@@ -93,9 +93,6 @@ def show_home(db_controller, id_user, user_name, access_level, nacao, cpi, facca
             func8_button = customtkinter.CTkButton(master=frame, text=f"Remover facção de nação", width=200, height=40, command=lambda: lider_help.remover_faccao_nacao(frame))
             func8_button.place(relx=0.15, rely=0.84, anchor=tkinter.CENTER)
         
-        # Relatório
-        button1 = customtkinter.CTkButton(master=frame, text="Gerar relatório", width=200, height=40)
-        button1.place(relx=0.51, rely=0.91, anchor=tkinter.CENTER)
         
             
     elif "CIENTISTA" in access_level:
@@ -125,6 +122,11 @@ def show_home(db_controller, id_user, user_name, access_level, nacao, cpi, facca
             
             func8_button = customtkinter.CTkButton(master=frame, text=f"Remover facção de nação", width=200, height=40, command=lambda: lider_help.remover_faccao_nacao(frame))
             func8_button.place(relx=0.15, rely=0.84, anchor=tkinter.CENTER)
+        
+
+    # Relatório
+    button1 = customtkinter.CTkButton(master=frame, text="Gerar relatório", width=200, height=40)
+    button1.place(relx=0.51, rely=0.91, anchor=tkinter.CENTER)
 
     # Log out
     button2 = customtkinter.CTkButton(master=frame, text="Log out", width=200, height=40, command=lambda: back_to_login())
