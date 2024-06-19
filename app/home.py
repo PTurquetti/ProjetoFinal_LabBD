@@ -62,7 +62,7 @@ def show_home(db_controller, id_user, user_name, access_level, nacao, cpi, facca
             func3_button = customtkinter.CTkButton(master=frame, text="Credenciar novas comunidades", width=200, height=40, command=lambda: lider_help.credenciar_nova_comunidade(frame, db_controller, cpi))
             func3_button.place(relx=0.15, rely=0.44, anchor=tkinter.CENTER)
             
-            func4_button = customtkinter.CTkButton(master=frame, text=f"Remover facção de nação", width=200, height=40, command=lambda: lider_help.remover_faccao_nacao(frame))
+            func4_button = customtkinter.CTkButton(master=frame, text=f"Remover facção de nação", width=200, height=40, command=lambda: lider_help.remover_faccao_nacao(frame, db_controller, cpi, faccao))
             func4_button.place(relx=0.15, rely=0.52, anchor=tkinter.CENTER)
 
             button2 = customtkinter.CTkButton(master=frame, text="Relatório de Facção", width=200, height=40)
@@ -103,7 +103,7 @@ def show_home(db_controller, id_user, user_name, access_level, nacao, cpi, facca
             func7_button = customtkinter.CTkButton(master=frame, text="Credenciar novas comunidades", width=200, height=40, command=lambda: lider_help.credenciar_nova_comunidade(frame, db_controller, cpi))
             func7_button.place(relx=0.15, rely=0.76, anchor=tkinter.CENTER)
             
-            func8_button = customtkinter.CTkButton(master=frame, text=f"Remover facção de nação", width=200, height=40, command=lambda: lider_help.remover_faccao_nacao(frame))
+            func8_button = customtkinter.CTkButton(master=frame, text=f"Remover facção de nação", width=200, height=40, command=lambda: lider_help.remover_faccao_nacao(frame, db_controller, cpi, faccao))
             func8_button.place(relx=0.15, rely=0.84, anchor=tkinter.CENTER)
 
             button4 = customtkinter.CTkButton(master=frame, text="Relatório de Facção", width=200, height=40)
@@ -140,7 +140,7 @@ def show_home(db_controller, id_user, user_name, access_level, nacao, cpi, facca
             func7_button = customtkinter.CTkButton(master=frame, text="Credenciar novas comunidades", width=200, height=40, command=lambda: lider_help.credenciar_nova_comunidade(frame, db_controller, cpi))
             func7_button.place(relx=0.15, rely=0.76, anchor=tkinter.CENTER)
             
-            func8_button = customtkinter.CTkButton(master=frame, text=f"Remover facção de nação", width=200, height=40, command=lambda: lider_help.remover_faccao_nacao(frame))
+            func8_button = customtkinter.CTkButton(master=frame, text=f"Remover facção de nação", width=200, height=40, command=lambda: lider_help.remover_faccao_nacao(frame, db_controller, cpi, faccao))
             func8_button.place(relx=0.15, rely=0.84, anchor=tkinter.CENTER)
 
             button2 = customtkinter.CTkButton(master=frame, text="Relatório de Facção", width=200, height=40)
