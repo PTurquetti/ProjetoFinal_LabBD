@@ -4,8 +4,8 @@ import customtkinter
 import pandas as pd
 from io import StringIO
 
-customtkinter.set_appearance_mode("dark")  # Set dark mode for all customtkinter widgets
-customtkinter.set_default_color_theme("blue")  # Set the color theme to blue
+#customtkinter.set_appearance_mode("dark")  # Set dark mode for all customtkinter widgets
+#customtkinter.set_default_color_theme("blue")  # Set the color theme to blue
 
 def show_report_page(csv_string):
     # Create the main window
