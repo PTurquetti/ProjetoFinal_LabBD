@@ -8,10 +8,8 @@ from login import show_login
 from relatorio import show_report_page
 
 def gera_relatorio(db_controller, a, b, c):
-    print('ok')
     s = db_controller.call_function(a, b, c)
     show_report_page(s)
-    print(s)
 
 def show_home(db_controller, id_user, user_name, access_level, nacao, cpi, faccao):
     home_window = customtkinter.CTk()
