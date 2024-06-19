@@ -26,7 +26,7 @@ def show_popup(message):
 
 def insere(db_controller, cpi, id, x, y, z):
         try:
-                info_funcao = db_controller.call_function('PCT_GERENCIAMENTO_CIENTISTA.insere_estrela', [cpi, id, 'Nome_padrão', 'Padrão', 0, x, y, z], str)
+                info_funcao = db_controller.call_function('PCT_GERENCIAMENTO_CIENTISTA.insere_estrela', [cpi, id, 'Nome_padrao', 'Padrao', 1000, x, y, z], str)
                 show_popup(info_funcao)
                 db_controller.commit()
         except DatabaseError as ex:
@@ -108,7 +108,7 @@ def inserir_nova_estrela(frame, db_controller, cpi):
         entryFNamez = customtkinter.CTkEntry(master=frame3, placeholder_text="Coordenada Z", height=40, width=130, corner_radius=32)  # Create an entry with a placeholder
         entryFNamez.place(relx=0.75, rely=0.62, anchor=tkinter.CENTER)  # Place the entry in the center of the frame
 
-        buttonFName = customtkinter.CTkButton(master=frame3, text="Confirmar", width=200, height=40, corner_radius=32,  command=lambda: insere(db_controller, cpi, entryFNameid.get(), entryFNamex.get(), entryFNamey.get(), entryFNamez.get())
+        buttonFName = customtkinter.CTkButton(master=frame3, text="Confirmar", width=200, height=40, corner_radius=32,  command=lambda: insere(db_controller, cpi, entryFNameid.get(), entryFNamex.get(), entryFNamey.get(), entryFNamez.get()))
         buttonFName.place(relx=0.5, rely=0.85, anchor=tkinter.CENTER)
 
 def ver_informacoes_estrela(frame, db_controller, cpi):
@@ -123,7 +123,7 @@ def ver_informacoes_estrela(frame, db_controller, cpi):
         entryFName = customtkinter.CTkEntry(master=frame3, placeholder_text="Estrela", height=40, width=350, corner_radius=32)  # Create an entry with a placeholder
         entryFName.place(relx=0.5, rely=0.5, anchor=tkinter.CENTER)  # Place the entry in the center of the frame
         
-        buttonFName = customtkinter.CTkButton(master=frame3, text="Confirmar", width=200, height=40, corner_radius=32, command=lambda: ver(db_controller, cpi, entryFName.get())
+        buttonFName = customtkinter.CTkButton(master=frame3, text="Confirmar", width=200, height=40, corner_radius=32, command=lambda: ver(db_controller, cpi, entryFName.get()))
         buttonFName.place(relx=0.5, rely=0.7, anchor=tkinter.CENTER)
 
 def atualizar_estrela(frame, db_controller, cpi):
@@ -156,7 +156,7 @@ def atualizar_estrela(frame, db_controller, cpi):
         entryFNamez = customtkinter.CTkEntry(master=frame3, placeholder_text="Coordenada Z *", height=40, width=130, corner_radius=32)  # Create an entry with a placeholder
         entryFNamez.place(relx=0.75, rely=0.66, anchor=tkinter.CENTER)  # Place the entry in the center of the frame
 
-        buttonFName = customtkinter.CTkButton(master=frame3, text="Confirmar", width=200, height=40, corner_radius=32, command=lambda: insere(db_controller, cpi, entryFNameid.get(), entryFName.get(), entryFNamec.get(), entryFNamem.get(), entryFNamex.get(), entryFNamey.get(), entryFNamez.get())
+        buttonFName = customtkinter.CTkButton(master=frame3, text="Confirmar", width=200, height=40, corner_radius=32, command=lambda: atualiza(db_controller, cpi, entryFNameid.get(), entryFName.get(), entryFNamec.get(), entryFNamem.get(), entryFNamex.get(), entryFNamey.get(), entryFNamez.get()))
         buttonFName.place(relx=0.5, rely=0.85, anchor=tkinter.CENTER)
 
 def remover_estrela(frame, db_controller, cpi):
@@ -171,5 +171,5 @@ def remover_estrela(frame, db_controller, cpi):
         entryFName = customtkinter.CTkEntry(master=frame3, placeholder_text="ID strela", height=40, width=350, corner_radius=32)  # Create an entry with a placeholder
         entryFName.place(relx=0.5, rely=0.5, anchor=tkinter.CENTER)  # Place the entry in the center of the frame
         
-        buttonFName = customtkinter.CTkButton(master=frame3, text="Confirmar", width=200, height=40, corner_radius=32, command=lambda: remove(db_controller, cpi, entryFName.get())
+        buttonFName = customtkinter.CTkButton(master=frame3, text="Confirmar", width=200, height=40, corner_radius=32, command=lambda: remove(db_controller, cpi, entryFName.get()))
         buttonFName.place(relx=0.5, rely=0.7, anchor=tkinter.CENTER)
