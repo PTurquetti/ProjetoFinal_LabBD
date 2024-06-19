@@ -16,6 +16,10 @@ CREATE OR REPLACE PACKAGE PCT_GERENCIAMENTO_COMANDANTE AS
         p_cpiuser LIDER.CPI%TYPE,
         p_planeta PLANETA.ID_ASTRO%TYPE
     ) RETURN VARCHAR2;
+    FUNCTION criar_federacao (
+        p_cpiuser LIDER.CPI%TYPE,
+        p_federacao FEDERACAO.NOME%TYPE
+    ) RETURN VARCHAR2;
 END PCT_GERENCIAMENTO_COMANDANTE;
 
 /
@@ -154,6 +158,40 @@ CREATE OR REPLACE PACKAGE BODY PCT_GERENCIAMENTO_COMANDANTE AS
         --WHEN OTHERS THEN
             --RAISE_APPLICATION_ERROR(-20000, 'Não foi possível inserir dominância.');
     END insere_dominancia;
+
+    FUNCTION criar_federacao (
+        p_cpiuser LIDER.CPI%TYPE,
+        p_federacao FEDERACAO.NOME%TYPE
+    ) RETURN VARCHAR2 IS
+        v_nacao NACAO.NOME%TYPE;
+        v_federacao_antiga FEDERACAO.NOME%TYPE;
+    BEGIN
+        v_nacao := retorna_nacao(p_cpiuser);
+        IF v_nacao IS NULL THEN
+            RAISE E_USER_NAO_CADASTRADO;
+        END IF;
+        IF (NOT retorna_se_comandante(p_cpiuser)) THEN
+            RAISE E_USER_NAO_EH_COMANDANTE;
+        END IF;
+        SELECT FEDERACAO INTO v_federacao_antiga FROM NACAO WHERE NOME = v_nacao;
+        IF v_federacao_antiga IS NOT NULL THEN
+            RAISE E_NACAO_JA_TEM_FEDERACAO;
+        END IF;
+        INSERT INTO FEDERACAO VALUES (p_federacao, SYSDATE);
+        UPDATE NACAO SET FEDERACAO = p_federacao WHERE NOME = v_nacao;
+        RETURN 'Federação criada com sucesso!';
+    EXCEPTION 
+        WHEN E_USER_NAO_CADASTRADO THEN
+            RAISE_APPLICATION_ERROR(-20000, 'Usuário não cadastrado.');
+        WHEN E_USER_NAO_EH_COMANDANTE THEN
+            RAISE_APPLICATION_ERROR(-20000, 'Usuário não é comandante.');
+        WHEN E_NACAO_JA_TEM_FEDERACAO THEN
+            RAISE_APPLICATION_ERROR(-20000, 'Nação já tem federação.');
+        WHEN DUP_VAL_ON_INDEX THEN
+            RAISE_APPLICATION_ERROR(-20000, 'Federação inválida.');
+        WHEN OTHERS THEN
+            RAISE_APPLICATION_ERROR(-20000, 'Não foi possível inserir federação.');
+    END criar_federacao;
     
 END PCT_GERENCIAMENTO_COMANDANTE;
 /
