@@ -81,16 +81,16 @@ def show_home(db_controller, id_user, user_name, access_level, nacao, cpi, facca
         button3.place(relx=0.51, rely=0.79, anchor=tkinter.CENTER)
 
         # Funções específicas para Comandante
-        func1_button = customtkinter.CTkButton(master=frame, text="Incluir nação em uma federação", width=200, height=40, command=lambda: comandante_help.incluir_nacao_federacao(frame))
+        func1_button = customtkinter.CTkButton(master=frame, text="Incluir nação em uma federação", width=200, height=40, command=lambda: comandante_help.incluir_nacao_federacao(frame, db_controller, cpi))
         func1_button.place(relx=0.15, rely=0.28, anchor=tkinter.CENTER)
 
-        func2_button = customtkinter.CTkButton(master=frame, text="Excluir nação de uma federação", width=200, height=40, command=lambda: comandante_help.excluir_nacao_federacao(frame))
+        func2_button = customtkinter.CTkButton(master=frame, text="Excluir nação de uma federação", width=200, height=40, command=lambda: comandante_help.excluir_nacao_federacao(frame, db_controller, cpi))
         func2_button.place(relx=0.15, rely=0.36, anchor=tkinter.CENTER)
         
-        func3_button = customtkinter.CTkButton(master=frame, text="Criar nova federação na nação", width=200, height=40, command=lambda: comandante_help.criar_nova_federacao(frame))
+        func3_button = customtkinter.CTkButton(master=frame, text="Criar nova federação na nação", width=200, height=40, command=lambda: comandante_help.criar_nova_federacao(frame, db_controller, cpi))
         func3_button.place(relx=0.15, rely=0.44, anchor=tkinter.CENTER)
 
-        func4_button = customtkinter.CTkButton(master=frame, text="Inserir dominância em planeta", width=200, height=40, command=lambda: comandante_help.inserir_dominancia_planeta(frame))
+        func4_button = customtkinter.CTkButton(master=frame, text="Inserir dominância em planeta", width=200, height=40, command=lambda: comandante_help.inserir_dominancia_planeta(frame, db_controller, cpi))
         func4_button.place(relx=0.15, rely=0.52, anchor=tkinter.CENTER)
 
         if "LIDER" in access_level:
@@ -117,17 +117,17 @@ def show_home(db_controller, id_user, user_name, access_level, nacao, cpi, facca
         button1.place(relx=0.51, rely=0.91, anchor=tkinter.CENTER)
 
         # Funções específicas para cientista
-        func1_button = customtkinter.CTkButton(master=frame, text="Inserir nova estrela", width=200, height=40, command=lambda: cientista_help.inserir_nova_estrela(frame))
+        func1_button = customtkinter.CTkButton(master=frame, text="Inserir nova estrela", width=200, height=40, command=lambda: cientista_help.inserir_nova_estrela(frame, db_controller, cpi))
         func1_button.place(relx=0.15, rely=0.28, anchor=tkinter.CENTER)
 
         # Funções específicas para Comandante
-        func2_button = customtkinter.CTkButton(master=frame, text="Ver infos sobre estrela", width=200, height=40, command=lambda: cientista_help.ver_informacoes_estrela(frame))
+        func2_button = customtkinter.CTkButton(master=frame, text="Ver infos sobre estrela", width=200, height=40, command=lambda: cientista_help.ver_informacoes_estrela(frame, db_controller, cpi))
         func2_button.place(relx=0.15, rely=0.36, anchor=tkinter.CENTER)
         
-        func3_button = customtkinter.CTkButton(master=frame, text="Atualizar estrela", width=200, height=40, command=lambda: cientista_help.atualizar_estrela(frame))
+        func3_button = customtkinter.CTkButton(master=frame, text="Atualizar estrela", width=200, height=40, command=lambda: cientista_help.atualizar_estrela(frame, db_controller, cpi))
         func3_button.place(relx=0.15, rely=0.44, anchor=tkinter.CENTER)
 
-        func4_button = customtkinter.CTkButton(master=frame, text="Deletar estrela", width=200, height=40, command=lambda: cientista_help.remover_estrela(frame))
+        func4_button = customtkinter.CTkButton(master=frame, text="Deletar estrela", width=200, height=40, command=lambda: cientista_help.remover_estrela(frame, db_controller, cpi))
         func4_button.place(relx=0.15, rely=0.52, anchor=tkinter.CENTER)
 
         if "LIDER" in access_level:
