@@ -55,6 +55,21 @@ def exclui_fac_nac(db_controller, cpi):
                         show_popup('Erro da base de dados (olhar log)')
                         print('Erro da base de dados:', error.code, error.message)
 
+def nova_fed(db_controller, cpi, nova_fed):
+        try:
+                info_funcao = db_controller.call_function('PCT_GERENCIAMENTO_COMANDANTE.criar_federacao', [cpi, nova_fed], str)
+                show_popup(info_funcao)
+                db_controller.commit()
+        except DatabaseError as ex:
+                error, = ex.args
+                if error.code == 20000:  # erro lógico 
+                        msg_erro = error.message.split(':')[1][:-10].strip()
+                        show_popup(msg_erro)
+                        print('Erro do usuário:', msg_erro)
+                else:
+                        show_popup('Erro da base de dados (olhar log)')
+                        print('Erro da base de dados:', error.code, error.message)
+
 def insere_dom(db_controller, cpi, planeta):
         try:
                 info_funcao = db_controller.call_function('PCT_GERENCIAMENTO_COMANDANTE.insere_dominancia', [cpi, planeta], str)
@@ -82,7 +97,7 @@ def incluir_nacao_federacao(frame, db_controller, cpi):
         entryFName = customtkinter.CTkEntry(master=frame3, placeholder_text="Nova federação", height=40, width=350, corner_radius=32)  # Create an entry with a placeholder
         entryFName.place(relx=0.5, rely=0.5, anchor=tkinter.CENTER)  # Place the entry in the center of the frame
         
-        buttonFName = customtkinter.CTkButton(master=frame3, text="Confirmar", width=200, height=40, corner_radius=32, command=lambda: exclui_fac_nac(db_controller, cpi))
+        buttonFName = customtkinter.CTkButton(master=frame3, text="Confirmar", width=200, height=40, corner_radius=32, command=lambda: inclui_fac_nac(db_controller, cpi))
         buttonFName.place(relx=0.5, rely=0.7, anchor=tkinter.CENTER)
 
 def excluir_nacao_federacao(frame, db_controller, cpi):
@@ -95,7 +110,7 @@ def excluir_nacao_federacao(frame, db_controller, cpi):
         tNovoNome = customtkinter.CTkLabel(master=frame3, text=f"Você tem certeza que deseja remover a nação {'nação'} da federação atual?", font=("Garamond", 16), wraplength=500)
         tNovoNome.place(relx=0.5, rely=0.4, anchor="center")
         
-        buttonFName = customtkinter.CTkButton(master=frame3, text="Confirmar", width=200, height=40, corner_radius=32,command=lambda: inclui_fac_nac(db_controller, cpi, entryFName.get()))
+        buttonFName = customtkinter.CTkButton(master=frame3, text="Confirmar", width=200, height=40, corner_radius=32,command=lambda: exclui_fac_nac(db_controller, cpi, entryFName.get()))
         buttonFName.place(relx=0.5, rely=0.55, anchor=tkinter.CENTER)
 
 def criar_nova_federacao(frame, db_controller, cpi):
@@ -107,7 +122,7 @@ def criar_nova_federacao(frame, db_controller, cpi):
         tNovoNome = customtkinter.CTkLabel(master=frame3, text="Insira o nome da nova federação", font=("Garamond", 16))
         tNovoNome.place(relx=0.5, rely=0.35, anchor="center")
 
-        entryFName = customtkinter.CTkEntry(master=frame3, placeholder_text="Nova federação", height=40, width=350, corner_radius=32)  # Create an entry with a placeholder
+        entryFName = customtkinter.CTkEntry(master=frame3, placeholder_text="Nova federação", height=40, width=350, corner_radius=32, command=lambda: nova_fed(db_controller, cpi, entryFName.get()))  # Create an entry with a placeholder
         entryFName.place(relx=0.5, rely=0.5, anchor=tkinter.CENTER)  # Place the entry in the center of the frame
         
         buttonFName = customtkinter.CTkButton(master=frame3, text="Confirmar", width=200, height=40, corner_radius=32)
