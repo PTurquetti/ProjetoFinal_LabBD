@@ -26,14 +26,37 @@ def show_login(db_controller):
             error, = ex.args
             if error.code == 20000:  # erro lógico 
                 msg_erro = error.message.split(':')[1][:-10].strip()
+                show_popup(msg_erro)
                 print('Erro do usuário:', msg_erro)
             else:
+                show_popup('Erro da base de dados (olhar log)')
                 print('Erro da base de dados:', error.code, error.message)
-            #TODO: Mostrar mensagem de erro ao usuário e re-validação caso necessário
     
     def on_closing(db_controller):
         del db_controller
         app.destroy()
+        
+    def show_popup(message):
+        popup = tkinter.Toplevel()
+        popup.geometry('300x100')  # Set the size of the popup window
+        popup.title('Popup Message')
+        
+        popup.configure(bg='#202845')  # Dark blue background color
+        label = tkinter.Label(popup, text=message, padx=20, pady=20, fg='white', bg='#202845', font=('Garamond', 12))
+        label.pack()
+        
+        # Center the popup window
+        popup.update_idletasks()
+        width = popup.winfo_width()
+        height = popup.winfo_height()
+        x = (popup.winfo_screenwidth() // 2) - (width // 2)
+        y = (popup.winfo_screenheight() // 2) - (height // 2)
+        popup.geometry('{}x{}+{}+{}'.format(width, height, x, y))
+        
+        # Automatically close the popup after 3000 milliseconds (3 seconds)
+        popup.after(2500, popup.destroy)
+        
+        popup.mainloop()
         
 
     app = customtkinter.CTk()  # Create the main window
