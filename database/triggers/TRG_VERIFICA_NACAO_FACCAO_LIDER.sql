@@ -1,66 +1,65 @@
-CREATE OR REPLACE TRIGGER trg_lider_nacao_faccao3 FOR UPDATE OF nacao ON lider COMPOUND TRIGGER
+create or replace TRIGGER TRG_VERIFICA_NACAO_FACCAO_LIDER FOR UPDATE OF NACAO ON LIDER COMPOUND TRIGGER
     -- Criação de tipos para armazenamento de coleções de registros
-    TYPE t_lideres_faccoes IS TABLE OF faccao.nome%TYPE INDEX BY VARCHAR2(14);
-    TYPE t_lideres_nacoes IS TABLE OF nacao.nome%TYPE INDEX BY VARCHAR2(14);
-    TYPE t_nacoes_faccoes IS TABLE OF NUMBER(1) INDEX BY VARCHAR2(30);
-    TYPE t_cpis_lideres IS VARRAY(1000000) OF lider.cpi%TYPE;
+    TYPE T_LIDERES_FACCOES IS TABLE OF FACCAO.NOME%TYPE INDEX BY VARCHAR2(14);
+    TYPE T_LIDERES_NACOES IS TABLE OF NACAO.NOME%TYPE INDEX BY VARCHAR2(14);
+    TYPE T_NACOES_FACCOES IS TABLE OF NUMBER(1) INDEX BY VARCHAR2(30);
+    TYPE T_CPIS_LIDERES IS VARRAY(1000000) OF LIDER.CPI%TYPE;
 
     -- Declaração de variáveis
-    v_cpis_lideres_atualizados t_cpis_lideres := t_cpis_lideres();
-    v_cpi_lider lider.cpi%TYPE;
-    v_nome_faccao faccao.nome%TYPE;
-    v_nome_nacao nacao.nome%TYPE;
-    v_lideres_faccoes t_lideres_faccoes := t_lideres_faccoes();
-    v_lideres_nacoes t_lideres_nacoes := t_lideres_nacoes();
-    v_nacoes_faccoes t_nacoes_faccoes := t_nacoes_faccoes();
+    V_CPIS_LIDERES_ATUALIZADOS T_CPIS_LIDERES := T_CPIS_LIDERES();
+    V_CPI_LIDER LIDER.CPI%TYPE;
+    V_NOME_FACCAO FACCAO.NOME%TYPE;
+    V_NOME_NACAO NACAO.NOME%TYPE;
+    V_LIDERES_FACCOES T_LIDERES_FACCOES := T_LIDERES_FACCOES();
+    V_LIDERES_NACOES T_LIDERES_NACOES := T_LIDERES_NACOES();
+    V_NACOES_FACCOES T_NACOES_FACCOES := T_NACOES_FACCOES();
 
     -- Declaração de cursor para consulta de facções e líderes
-    CURSOR c_lideres_faccoes IS
+    CURSOR C_LIDERES_FACCOES IS
         SELECT
-            l.cpi, l.nacao, f.nome
+            L.CPI, L.NACAO, F.NOME
         FROM
-            lider l
+            LIDER L
         JOIN
-            faccao f ON f.lider = l.cpi;
-    
+            FACCAO F ON F.LIDER = L.CPI;
+
     -- Declaração de cursor para consulta das relações entre nações e facções
-    CURSOR c_nacoes_faccoes IS
+    CURSOR C_NACOES_FACCOES IS
         SELECT
-            nf.nacao, nf.faccao
+            NF.NACAO, NF.FACCAO
         FROM
-            nacao_faccao nf;
+            NACAO_FACCAO NF;
 
 AFTER EACH ROW IS BEGIN
     -- Adição do cpi do líder atualizado à coleção
-    v_cpis_lideres_atualizados.EXTEND();
-    v_cpis_lideres_atualizados(v_cpis_lideres_atualizados.COUNT) := :new.cpi;
+    V_CPIS_LIDERES_ATUALIZADOS.EXTEND();
+    V_CPIS_LIDERES_ATUALIZADOS(V_CPIS_LIDERES_ATUALIZADOS.COUNT) := :NEW.CPI;
 END AFTER EACH ROW;
 
 AFTER STATEMENT IS BEGIN
     -- Atribuição dos líderes e facções
-    OPEN c_lideres_faccoes;
-    LOOP FETCH c_lideres_faccoes INTO v_cpi_lider, v_nome_nacao, v_nome_faccao;
-        EXIT WHEN c_lideres_faccoes%NOTFOUND;
-        v_lideres_faccoes(v_cpi_lider) := v_nome_faccao;
-        v_lideres_nacoes(v_cpi_lider) := v_nome_nacao;
+    OPEN C_LIDERES_FACCOES;
+    LOOP FETCH C_LIDERES_FACCOES INTO V_CPI_LIDER, V_NOME_NACAO, V_NOME_FACCAO;
+        EXIT WHEN C_LIDERES_FACCOES%NOTFOUND;
+        V_LIDERES_FACCOES(V_CPI_LIDER) := V_NOME_FACCAO;
+        V_LIDERES_NACOES(V_CPI_LIDER) := V_NOME_NACAO;
     END LOOP;
 
     -- Atribuição das relações entre nações e facções
-    OPEN c_nacoes_faccoes;
-    LOOP FETCH c_nacoes_faccoes INTO v_nome_nacao, v_nome_faccao;
-        EXIT WHEN c_nacoes_faccoes%NOTFOUND;
-        v_nacoes_faccoes(v_nome_nacao || v_nome_faccao) := 1;
+    OPEN C_NACOES_FACCOES;
+    LOOP FETCH C_NACOES_FACCOES INTO V_NOME_NACAO, V_NOME_FACCAO;
+        EXIT WHEN C_NACOES_FACCOES%NOTFOUND;
+        V_NACOES_FACCOES(V_NOME_NACAO || V_NOME_FACCAO) := 1;
     END LOOP;
-    
+
     -- Verificação se os líderes de facção atualizados estão associados a uma nação em que a facção está presente
-    FOR i IN 1..v_cpis_lideres_atualizados.COUNT LOOP
-        IF v_lideres_faccoes.EXISTS(v_cpis_lideres_atualizados(i)) THEN  -- se é um líder de facção
-            IF NOT v_nacoes_faccoes.EXISTS(v_lideres_nacoes(v_cpis_lideres_atualizados(i)) || v_lideres_faccoes(v_cpis_lideres_atualizados(i))) THEN  -- se a facção não está associada à nação
-                raise_application_error(-20000, 'O líder da facção deve estar associado a uma nação em que a facção está presente.');
+    FOR I IN 1..V_CPIS_LIDERES_ATUALIZADOS.COUNT LOOP
+        IF V_LIDERES_FACCOES.EXISTS(V_CPIS_LIDERES_ATUALIZADOS(I)) THEN  -- se é um líder de facção
+            IF NOT V_NACOES_FACCOES.EXISTS(V_LIDERES_NACOES(V_CPIS_LIDERES_ATUALIZADOS(I)) || V_LIDERES_FACCOES(V_CPIS_LIDERES_ATUALIZADOS(I))) THEN  -- se a facção não está associada à nação
+                RAISE_APPLICATION_ERROR(-20000, 'O líder da facção deve estar associado a uma nação em que a facção está presente.');
             END IF;
         END IF;
     END LOOP;
 END AFTER STATEMENT;
 
-END trg_lider_nacao_faccao3;
-/
+END TRG_VERIFICA_NACAO_FACCAO_LIDER;
