@@ -43,6 +43,11 @@ CREATE OR REPLACE PACKAGE BODY PCT_USER_TABLE AS
         V_INPUT_PASSWORD_HASH VARCHAR2(32);
         V_LINHA_USER_LIDER VIEW_USUARIO_LIDER%ROWTYPE;
     BEGIN
+        -- Verifique se os parâmetros são válidos
+        IF P_IDLIDER IS NULL OR P_IDLIDER = '' OR P_PASSWORD IS NULL OR P_PASSWORD = '' THEN
+            RAISE_APPLICATION_ERROR(-20000, 'Parâmetros inválidos');
+        END IF;
+
         -- Calcule o hash MD5 da senha fornecida pelo usuário usando a função calcular_md5
         V_INPUT_PASSWORD_HASH := PCT_USER_TABLE.CALCULAR_MD5(P_PASSWORD);
         
