@@ -53,7 +53,7 @@ def show_home(db_controller, id_user, user_name, access_level, nacao, cpi, facca
 
     if "OFICIAL" in access_level:
         # Relatório do oficial
-        button1 = customtkinter.CTkButton(master=frame, text="Relatório de habitantes", width=200, height=40, command=lambda: gera_relatorio(db_controller, 'PCT_RELATORIO_OFICIAL.GERAR_RELATORIO_HABITANTES', [cpi], str))
+        button1 = customtkinter.CTkButton(master=frame, text="Relatório de habitantes", width=200, height=40, command=lambda: gera_relatorio(db_controller, 'PCT_RELATORIO_OFICIAL.GERAR_RELATORIO_HABITANTES', [cpi, 1], str))
         button1.place(relx=0.51, rely=0.91, anchor=tkinter.CENTER)
 
         # Funções específicas para Líder de facção
