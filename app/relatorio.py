@@ -15,7 +15,7 @@ def show_report_page(csv_string):
 
     # Convert the CSV string to a pandas DataFrame
     data = StringIO(csv_string)
-    df = pd.read_csv(data)
+    df = pd.read_csv(data, sep=';')
 
     # Create a frame to hold the table
     frame = customtkinter.CTkFrame(master=relatorio_window, width=1000, height=500, corner_radius=16) # Create a frame with rounded corners
@@ -45,16 +45,5 @@ def show_report_page(csv_string):
     tree.grid(row=0, column=0, sticky='nsew')
     scrollbar.grid(row=0, column=1, sticky='ns')
 
-    # Log out button
-    button2 = customtkinter.CTkButton(master=relatorio_window, text="Log out", width=200, height=40, command=lambda: log_out(relatorio_window))
-    button2.place(relx=0.5, rely=0.95, anchor=tk.CENTER)
-
     relatorio_window.mainloop()
-
-def log_out(window):
-    window.destroy()
-    # Assuming 'login' is a module with a function 'show_login' to display the login page
-    import login
-    login.show_login()
-
 
