@@ -6,7 +6,7 @@ import comandante_help
 import cientista_help
 from login import show_login
 
-def show_home(db_controller, id_user, user_name, access_level, nacao, cpi):
+def show_home(db_controller, id_user, user_name, access_level, nacao, cpi, faccao):
     home_window = customtkinter.CTk()
     home_window.geometry("1024x1024")
     home_window.title("Home Page")

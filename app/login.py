@@ -18,9 +18,9 @@ def show_login(db_controller):
             cpi, senha = entry1.get(), entry2.get()
             info_login = db_controller.call_function('PCT_USER_TABLE.fazer_login', [cpi, senha], str)
             info_login = [s.strip() for s in info_login.split(';')]
-            id_user, username, access_level, nacao = info_login
+            id_user, username, access_level, nacao,faccao = info_login
             app.destroy()  # Close the login window
-            show_home(db_controller, id_user, username, access_level, nacao, cpi) # Passa o db_controller para a próxima tela
+            show_home(db_controller, id_user, username, access_level, nacao, cpi, faccao) # Passa o db_controller para a próxima tela
         except DatabaseError as ex:
             error, = ex.args
             if error.code == 20000:  # erro lógico 

@@ -40,35 +40,29 @@ CREATE OR REPLACE PACKAGE BODY PCT_USER_TABLE AS
         P_IDLIDER LIDER.CPI%TYPE,
         P_PASSWORD VARCHAR2
     ) RETURN VARCHAR2 AS
-        V_STORED_PASSWORD VARCHAR2(32);
         V_INPUT_PASSWORD_HASH VARCHAR2(32);
-        V_CARGO CHAR(10);
-        V_USERID USERS.USERID%TYPE;
-        V_NACAO NACAO.NOME%TYPE;
-        V_NOME LIDER.NOME%TYPE;
+        V_LINHA_USER_LIDER VIEW_USUARIO_LIDER%ROWTYPE;
     BEGIN
         -- Calcule o hash MD5 da senha fornecida pelo usuário usando a função calcular_md5
         V_INPUT_PASSWORD_HASH := PCT_USER_TABLE.CALCULAR_MD5(P_PASSWORD);
         
         BEGIN
             -- Obtenha a senha criptografada e o id do user
-            SELECT PASSWORD, USERID INTO V_STORED_PASSWORD, V_USERID FROM USERS WHERE IDLIDER = P_IDLIDER;
+            SELECT * INTO V_LINHA_USER_LIDER FROM VIEW_USUARIO_LIDER WHERE CPI = P_IDLIDER;
         EXCEPTION
             WHEN NO_DATA_FOUND THEN
                 RAISE_APPLICATION_ERROR(-20000, 'Usuário não cadastrado');
         END;
 
         -- Compare os hashes e retorne o resultado
-        IF V_STORED_PASSWORD = V_INPUT_PASSWORD_HASH THEN
-            BEGIN
-                SELECT NOME, CARGO, NACAO INTO V_NOME, V_CARGO, V_NACAO FROM LIDER WHERE CPI = P_IDLIDER;
-            EXCEPTION
-                WHEN NO_DATA_FOUND THEN
-                    RAISE_APPLICATION_ERROR(-20000, 'Usuário não cadastrado');
-            END;
-
+        -- IF V_STORED_PASSWORD = V_INPUT_PASSWORD_HASH THEN
+        IF V_LINHA_USER_LIDER.PASSWORD = V_INPUT_PASSWORD_HASH THEN
             -- Retorna resultado
-            RETURN V_USERID || ';' || V_NOME || ';' ||  V_CARGO || ';' || V_NACAO;
+            RETURN V_LINHA_USER_LIDER.ID || ';' || 
+                     V_LINHA_USER_LIDER.NOME || ';' || 
+                     V_LINHA_USER_LIDER.CARGO || ';' || 
+                     V_LINHA_USER_LIDER.NACAO || ';' ||
+                     V_LINHA_USER_LIDER.NOME_FACCAO;
         END IF;
         RAISE_APPLICATION_ERROR(-20000, 'Senha incorreta');
     END FAZER_LOGIN;
