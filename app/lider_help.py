@@ -63,10 +63,10 @@ def insere_com(db_controller, cpi, especie, nome):
                         show_popup(msg_erro)
                         print('Erro do usuário:', msg_erro)
                 else:
-                        show_popup('Erro da base de dados (olhar log)')
+                        show_popup('Erro da base de dados (olhar log) ' + str(error.code) + ' '  + error.message)
                         print('Erro da base de dados:', error.code, error.message)
 
-def alter_faction_name(frame):
+def alter_faction_name(frame, db_controller, cpi):
         # TODO: Implementar a conexão com o banco de dados para alterar o nome da facção
         
         frame3 = customtkinter.CTkFrame(master=frame, width=550, height=300, corner_radius=36)  # Create a frame with rounded corners
@@ -78,7 +78,7 @@ def alter_faction_name(frame):
         entryFName = customtkinter.CTkEntry(master=frame3, placeholder_text="Novo nome", height=40, width=350, corner_radius=32)  # Create an entry with a placeholder
         entryFName.place(relx=0.5, rely=0.5, anchor=tkinter.CENTER)  # Place the entry in the center of the frame
         
-        buttonFName = customtkinter.CTkButton(master=frame3, text="Confirmar", width=200, height=40, corner_radius=32)
+        buttonFName = customtkinter.CTkButton(master=frame3, text="Confirmar", width=200, height=40, corner_radius=32, command=lambda: alterar_nome(db_controller, cpi, entryFName.get()))  # Call the function to change the faction name
         buttonFName.place(relx=0.5, rely=0.7, anchor=tkinter.CENTER)
 
 def indicar_novo_lider(frame):

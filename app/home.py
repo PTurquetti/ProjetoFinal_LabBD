@@ -53,7 +53,7 @@ def show_home(db_controller, id_user, user_name, access_level, nacao, cpi, facca
 
         # Funções específicas para Líder de facção
         if "LIDER" in access_level:
-            func1_button = customtkinter.CTkButton(master=frame, text="Alterar nome da facção", width=200, height=40, command=lambda: lider_help.alter_faction_name(frame))
+            func1_button = customtkinter.CTkButton(master=frame, text="Alterar nome da facção", width=200, height=40, command=lambda: lider_help.alter_faction_name(frame, db_controller, cpi))
             func1_button.place(relx=0.15, rely=0.28, anchor=tkinter.CENTER)
             
             func2_button = customtkinter.CTkButton(master=frame, text="Indicar novo líder", width=200, height=40, command=lambda: lider_help.indicar_novo_lider(frame))
@@ -94,7 +94,7 @@ def show_home(db_controller, id_user, user_name, access_level, nacao, cpi, facca
         func4_button.place(relx=0.15, rely=0.52, anchor=tkinter.CENTER)
 
         if "LIDER" in access_level:
-            func5_button = customtkinter.CTkButton(master=frame, text="Alterar nome da facção", width=200, height=40, command=lambda: lider_help.alter_faction_name(frame))
+            func5_button = customtkinter.CTkButton(master=frame, text="Alterar nome da facção", width=200, height=40, command=lambda: lider_help.alter_faction_name(frame, db_controller, cpi))
             func5_button.place(relx=0.15, rely=0.60, anchor=tkinter.CENTER)
             
             func6_button = customtkinter.CTkButton(master=frame, text="Indicar novo líder", width=200, height=40, command=lambda: lider_help.indicar_novo_lider(frame))
@@ -131,7 +131,7 @@ def show_home(db_controller, id_user, user_name, access_level, nacao, cpi, facca
         func4_button.place(relx=0.15, rely=0.52, anchor=tkinter.CENTER)
 
         if "LIDER" in access_level:
-            func5_button = customtkinter.CTkButton(master=frame, text="Alterar nome da facção", width=200, height=40, command=lambda: lider_help.alter_faction_name(frame))
+            func5_button = customtkinter.CTkButton(master=frame, text="Alterar nome da facção", width=200, height=40, command=lambda: lider_help.alter_faction_name(frame, db_controller, cpi))
             func5_button.place(relx=0.15, rely=0.6, anchor=tkinter.CENTER)
             
             func6_button = customtkinter.CTkButton(master=frame, text="Indicar novo líder", width=200, height=40, command=lambda: lider_help.indicar_novo_lider(frame))
