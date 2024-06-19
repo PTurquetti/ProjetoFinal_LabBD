@@ -41,6 +41,9 @@ BEGIN
         dbms_output.put_line('GRANT EXECUTE ON PCT_RELATORIO_COMANDANTE TO ' || user_names(i) || ';');
         EXECUTE IMMEDIATE 'GRANT EXECUTE ON PCT_RELATORIO_COMANDANTE TO ' || user_names(i);
     
+        dbms_output.put_line('GRANT EXECUTE ON PCT_RELATORIO_CIENTISTA TO ' || user_names(i) || ';');
+        EXECUTE IMMEDIATE 'GRANT EXECUTE ON PCT_RELATORIO_CIENTISTA TO ' || user_names(i);
+    
         i := user_names.NEXT(i);
     END LOOP;
 END;
