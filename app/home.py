@@ -79,10 +79,10 @@ def show_home(db_controller, id_user, user_name, access_level, nacao, cpi, facca
         button1 = customtkinter.CTkButton(master=frame, text="Relatório de Todos Planetas", width=200, height=40, command=lambda: gera_relatorio(db_controller, 'PCT_RELATORIO_COMANDANTE.GERAR_RELATORIO_TODOS_PLANETAS_COMANDANTE', [cpi, 1], str))
         button1.place(relx=0.51, rely=0.91, anchor=tkinter.CENTER)
 
-        button2 = customtkinter.CTkButton(master=frame, text="Relatório de Planetas Nação", width=200, height=40, command=lambda: gera_relatorio(db_controller, 'PCT_RELATORIO_COMANDANTE.GERAR_RELATORIO_PLANETAS_EXPANSAO_COMANDANTE', [cpi, 10000, 1], str))
+        button2 = customtkinter.CTkButton(master=frame, text="Relatório de Planetas Nação", width=200, height=40, command=lambda: gera_relatorio(db_controller, 'PCT_RELATORIO_COMANDANTE.GERAR_RELATORIO_PLANETAS_NACAO_COMANDANTE ', [cpi, 1], str))
         button2.place(relx=0.51, rely=0.85, anchor=tkinter.CENTER)
 
-        button3 = customtkinter.CTkButton(master=frame, text="Relatório de Planetas Potenciais", width=200, height=40, command=lambda: gera_relatorio(db_controller, 'PCT_RELATORIO_COMANDANTE.GERAR_RELATORIO_PLANETAS_NACAO_COMANDANTE', [cpi, 1], str))
+        button3 = customtkinter.CTkButton(master=frame, text="Relatório de Planetas Potenciais", width=200, height=40, command=lambda: gera_relatorio(db_controller, 'PCT_RELATORIO_COMANDANTE.GERAR_RELATORIO_PLANETAS_EXPANSAO_COMANDANTE', [cpi, 10000, 1], str))
         button3.place(relx=0.51, rely=0.79, anchor=tkinter.CENTER)
 
         # Funções específicas para Comandante

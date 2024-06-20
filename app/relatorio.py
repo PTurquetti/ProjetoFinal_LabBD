@@ -46,12 +46,3 @@ def show_report_page(csv_string):
     scrollbar.grid(row=0, column=1, sticky='ns')
 
     relatorio_window.mainloop()
-
-
-# db_controller = DBController()
-# s = db_controller.call_function('PCT_RELATORIO_COMANDANTE.GERAR_RELATORIO_TODOS_PLANETAS_COMANDANTE', ['265.833.107-42', 1], str)
-# show_report_page(s)
-# s = db_controller.call_function('PCT_RELATORIO_COMANDANTE.GERAR_RELATORIO_PLANETAS_EXPANSAO_COMANDANTE', ['265.833.107-42', 10000, 1], str)
-# show_report_page(s)
-# s = db_controller.call_function('PCT_RELATORIO_COMANDANTE.GERAR_RELATORIO_PLANETAS_NACAO_COMANDANTE', ['265.833.107-42', 1], str)
-# show_report_page(s)
