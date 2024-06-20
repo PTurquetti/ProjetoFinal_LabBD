@@ -87,8 +87,8 @@ CREATE OR REPLACE PACKAGE BODY PCT_GERENCIAMENTO_CIENTISTA AS
             RAISE_APPLICATION_ERROR(-20000, 'Usuário não é cientista');
         WHEN DUP_VAL_ON_INDEX THEN
             RAISE_APPLICATION_ERROR(-20000, 'Já existe estrela nessa posição ou com esse ID');
-        WHEN OTHERS THEN
-            RAISE_APPLICATION_ERROR(-20000, 'Não foi possível inserir estrela.');
+        --WHEN OTHERS THEN
+            --RAISE_APPLICATION_ERROR(-20000, 'Não foi possível inserir estrela.');
     END insere_estrela;
 
     FUNCTION remove_estrela_por_id (
@@ -110,8 +110,8 @@ CREATE OR REPLACE PACKAGE BODY PCT_GERENCIAMENTO_CIENTISTA AS
             RAISE_APPLICATION_ERROR(-20000, 'Usuário não é cientista');
         WHEN NO_DATA_FOUND THEN
             RAISE_APPLICATION_ERROR(-20000, 'Estrela com esse id não existe');
-        WHEN OTHERS THEN
-            RAISE_APPLICATION_ERROR(-20000, 'Não foi possível remover estrela.');
+        --WHEN OTHERS THEN
+            --RAISE_APPLICATION_ERROR(-20000, 'Não foi possível remover estrela.');
     END remove_estrela_por_id;
 
     FUNCTION remove_estrela_por_posicao (
@@ -135,8 +135,8 @@ CREATE OR REPLACE PACKAGE BODY PCT_GERENCIAMENTO_CIENTISTA AS
             RAISE_APPLICATION_ERROR(-20000, 'Usuário não é cientista');
         WHEN NO_DATA_FOUND THEN
             RAISE_APPLICATION_ERROR(-20000, 'Estrela nessa posição não existe');
-        WHEN OTHERS THEN
-            RAISE_APPLICATION_ERROR(-20000, 'Não foi possível remover estrela.');
+        --WHEN OTHERS THEN
+            --RAISE_APPLICATION_ERROR(-20000, 'Não foi possível remover estrela.');
     END remove_estrela_por_posicao;
 
     FUNCTION ler_estrela_por_id (
@@ -159,8 +159,8 @@ CREATE OR REPLACE PACKAGE BODY PCT_GERENCIAMENTO_CIENTISTA AS
             RAISE_APPLICATION_ERROR(-20000, 'Usuário não é cientista');
         WHEN NO_DATA_FOUND THEN
             RAISE_APPLICATION_ERROR(-20000, 'Estrela com esse id não existe');
-        WHEN OTHERS THEN
-            RAISE_APPLICATION_ERROR(-20000, 'Não foi possível ler estrela.');
+        --WHEN OTHERS THEN
+            --RAISE_APPLICATION_ERROR(-20000, 'Não foi possível ler estrela.');
     END ler_estrela_por_id;
 
     FUNCTION ler_estrela_por_posicao (
@@ -185,8 +185,8 @@ CREATE OR REPLACE PACKAGE BODY PCT_GERENCIAMENTO_CIENTISTA AS
             RAISE_APPLICATION_ERROR(-20000, 'Usuário não é cientista');
         WHEN NO_DATA_FOUND THEN
             RAISE_APPLICATION_ERROR(-20000, 'Estrela com esse id não existe');
-        WHEN OTHERS THEN
-            RAISE_APPLICATION_ERROR(-20000, 'Não foi possível ler estrela.');
+        --WHEN OTHERS THEN
+            --RAISE_APPLICATION_ERROR(-20000, 'Não foi possível ler estrela.');
     END ler_estrela_por_posicao;
 
     FUNCTION update_estrela (
@@ -216,8 +216,8 @@ CREATE OR REPLACE PACKAGE BODY PCT_GERENCIAMENTO_CIENTISTA AS
             RAISE_APPLICATION_ERROR(-20000, 'Estrela com esse id não existe.');
         WHEN DUP_VAL_ON_INDEX THEN
             RAISE_APPLICATION_ERROR(-20000, 'Já existe estrela nessa posição.');
-        WHEN OTHERS THEN
-            RAISE_APPLICATION_ERROR(-20000, 'Não foi possível atualizar estrela.');
+        --WHEN OTHERS THEN
+            --RAISE_APPLICATION_ERROR(-20000, 'Não foi possível atualizar estrela.');
     END update_estrela;
     
 END PCT_GERENCIAMENTO_CIENTISTA;

@@ -97,7 +97,7 @@ def incluir_nacao_federacao(frame, db_controller, cpi):
         entryFName = customtkinter.CTkEntry(master=frame3, placeholder_text="Nova federação", height=40, width=350, corner_radius=32)  # Create an entry with a placeholder
         entryFName.place(relx=0.5, rely=0.5, anchor=tkinter.CENTER)  # Place the entry in the center of the frame
         
-        buttonFName = customtkinter.CTkButton(master=frame3, text="Confirmar", width=200, height=40, corner_radius=32, command=lambda: inclui_fac_nac(db_controller, cpi))
+        buttonFName = customtkinter.CTkButton(master=frame3, text="Confirmar", width=200, height=40, corner_radius=32, command=lambda: inclui_fac_nac(db_controller, cpi, entryFName.get()))
         buttonFName.place(relx=0.5, rely=0.7, anchor=tkinter.CENTER)
 
 def excluir_nacao_federacao(frame, db_controller, cpi):
@@ -110,7 +110,7 @@ def excluir_nacao_federacao(frame, db_controller, cpi):
         tNovoNome = customtkinter.CTkLabel(master=frame3, text=f"Você tem certeza que deseja remover a nação {'nação'} da federação atual?", font=("Garamond", 16), wraplength=500)
         tNovoNome.place(relx=0.5, rely=0.4, anchor="center")
         
-        buttonFName = customtkinter.CTkButton(master=frame3, text="Confirmar", width=200, height=40, corner_radius=32,command=lambda: exclui_fac_nac(db_controller, cpi, entryFName.get()))
+        buttonFName = customtkinter.CTkButton(master=frame3, text="Confirmar", width=200, height=40, corner_radius=32,command=lambda: exclui_fac_nac(db_controller, cpi))
         buttonFName.place(relx=0.5, rely=0.55, anchor=tkinter.CENTER)
 
 def criar_nova_federacao(frame, db_controller, cpi):
@@ -122,10 +122,10 @@ def criar_nova_federacao(frame, db_controller, cpi):
         tNovoNome = customtkinter.CTkLabel(master=frame3, text="Insira o nome da nova federação", font=("Garamond", 16))
         tNovoNome.place(relx=0.5, rely=0.35, anchor="center")
 
-        entryFName = customtkinter.CTkEntry(master=frame3, placeholder_text="Nova federação", height=40, width=350, corner_radius=32, command=lambda: nova_fed(db_controller, cpi, entryFName.get()))  # Create an entry with a placeholder
+        entryFName = customtkinter.CTkEntry(master=frame3, placeholder_text="Nova federação", height=40, width=350, corner_radius=32)  # Create an entry with a placeholder
         entryFName.place(relx=0.5, rely=0.5, anchor=tkinter.CENTER)  # Place the entry in the center of the frame
         
-        buttonFName = customtkinter.CTkButton(master=frame3, text="Confirmar", width=200, height=40, corner_radius=32)
+        buttonFName = customtkinter.CTkButton(master=frame3, text="Confirmar", width=200, height=40, corner_radius=32, command=lambda: nova_fed(db_controller, cpi, entryFName.get()))
         buttonFName.place(relx=0.5, rely=0.7, anchor=tkinter.CENTER)
 
 def inserir_dominancia_planeta(frame, db_controller, cpi):
@@ -137,8 +137,8 @@ def inserir_dominancia_planeta(frame, db_controller, cpi):
         tNovoNome = customtkinter.CTkLabel(master=frame3, text="Insira o planeta ao qual você deseja inserir dominância", font=("Garamond", 16))
         tNovoNome.place(relx=0.5, rely=0.35, anchor="center")
 
-        entryFName = customtkinter.CTkEntry(master=frame3, placeholder_text="Planeta", height=40, width=350, corner_radius=32, command=lambda: insere_dom(db_controller, cpi, entryFName.get())  # Create an entry with a placeholder
+        entryFName = customtkinter.CTkEntry(master=frame3, placeholder_text="Planeta", height=40, width=350, corner_radius=32)  # Create an entry with a placeholder
         entryFName.place(relx=0.5, rely=0.5, anchor=tkinter.CENTER)  # Place the entry in the center of the frame
         
-        buttonFName = customtkinter.CTkButton(master=frame3, text="Confirmar", width=200, height=40, corner_radius=32)
+        buttonFName = customtkinter.CTkButton(master=frame3, text="Confirmar", width=200, height=40, corner_radius=32, command=lambda: insere_dom(db_controller, cpi, entryFName.get()))
         buttonFName.place(relx=0.5, rely=0.7, anchor=tkinter.CENTER)

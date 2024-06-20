@@ -5,6 +5,11 @@ import lider_help
 import comandante_help
 import cientista_help
 from login import show_login
+from relatorio import show_report_page
+
+def gera_relatorio(db_controller, a, b, c):
+    s = db_controller.call_function(a, b, c)
+    show_report_page(s)
 
 def show_home(db_controller, id_user, user_name, access_level, nacao, cpi, faccao):
     home_window = customtkinter.CTk()
@@ -48,7 +53,7 @@ def show_home(db_controller, id_user, user_name, access_level, nacao, cpi, facca
 
     if "OFICIAL" in access_level:
         # Relatório do oficial
-        button1 = customtkinter.CTkButton(master=frame, text="Relatório de habitantes", width=200, height=40)
+        button1 = customtkinter.CTkButton(master=frame, text="Relatório de habitantes", width=200, height=40, command=lambda: gera_relatorio(db_controller, 'PCT_RELATORIO_OFICIAL.GERAR_RELATORIO_HABITANTES', [cpi, 1], str))
         button1.place(relx=0.51, rely=0.91, anchor=tkinter.CENTER)
 
         # Funções específicas para Líder de facção
@@ -65,19 +70,19 @@ def show_home(db_controller, id_user, user_name, access_level, nacao, cpi, facca
             func4_button = customtkinter.CTkButton(master=frame, text=f"Remover facção de nação", width=200, height=40, command=lambda: lider_help.remover_faccao_nacao(frame, db_controller, cpi, faccao))
             func4_button.place(relx=0.15, rely=0.52, anchor=tkinter.CENTER)
 
-            button2 = customtkinter.CTkButton(master=frame, text="Relatório de Facção", width=200, height=40)
+            button2 = customtkinter.CTkButton(master=frame, text="Relatório de Facção", width=200, height=40, command=lambda: gera_relatorio(db_controller, 'PCT_RELATORIO_LIDER.GERAR_RELATORIO_COMUNIDADES', [cpi, 1], str))
             button2.place(relx=0.51, rely=0.85, anchor=tkinter.CENTER)
 
 
     elif "COMANDANTE" in access_level:
         # Relatórios do oficial
-        button1 = customtkinter.CTkButton(master=frame, text="Relatório de Todos Planetas", width=200, height=40)
+        button1 = customtkinter.CTkButton(master=frame, text="Relatório de Todos Planetas", width=200, height=40, command=lambda: gera_relatorio(db_controller, 'PCT_RELATORIO_COMANDANTE.GERAR_RELATORIO_TODOS_PLANETAS_COMANDANTE', [cpi, 1], str))
         button1.place(relx=0.51, rely=0.91, anchor=tkinter.CENTER)
 
-        button2 = customtkinter.CTkButton(master=frame, text="Relatório de Planetas Nação", width=200, height=40)
+        button2 = customtkinter.CTkButton(master=frame, text="Relatório de Planetas Nação", width=200, height=40, command=lambda: gera_relatorio(db_controller, 'PCT_RELATORIO_COMANDANTE.GERAR_RELATORIO_PLANETAS_EXPANSAO_COMANDANTE', [cpi, 10000, 1], str))
         button2.place(relx=0.51, rely=0.85, anchor=tkinter.CENTER)
 
-        button3 = customtkinter.CTkButton(master=frame, text="Relatório de Planetas Potenciais", width=200, height=40)
+        button3 = customtkinter.CTkButton(master=frame, text="Relatório de Planetas Potenciais", width=200, height=40, command=lambda: gera_relatorio(db_controller, 'PCT_RELATORIO_COMANDANTE.GERAR_RELATORIO_PLANETAS_NACAO_COMANDANTE', [cpi, 1], str))
         button3.place(relx=0.51, rely=0.79, anchor=tkinter.CENTER)
 
         # Funções específicas para Comandante
@@ -106,14 +111,14 @@ def show_home(db_controller, id_user, user_name, access_level, nacao, cpi, facca
             func8_button = customtkinter.CTkButton(master=frame, text=f"Remover facção de nação", width=200, height=40, command=lambda: lider_help.remover_faccao_nacao(frame, db_controller, cpi, faccao))
             func8_button.place(relx=0.15, rely=0.84, anchor=tkinter.CENTER)
 
-            button4 = customtkinter.CTkButton(master=frame, text="Relatório de Facção", width=200, height=40)
+            button4 = customtkinter.CTkButton(master=frame, text="Relatório de Facção", width=200, height=40, command=lambda: gera_relatorio(db_controller, 'PCT_RELATORIO_LIDER.GERAR_RELATORIO_COMUNIDADES', [cpi, 1], str))
             button4.place(relx=0.77, rely=0.79, anchor=tkinter.CENTER)
         
         
             
     elif "CIENTISTA" in access_level:
         # Relatório do cientista
-        button1 = customtkinter.CTkButton(master=frame, text="Relatório de Corpos Celestes", width=200, height=40)
+        button1 = customtkinter.CTkButton(master=frame, text="Relatório de Corpos Celestes", width=200, height=40, command=lambda: gera_relatorio(db_controller, 'PCT_RELATORIO_CIENTISTA.GERAR_RELATORIO_INFOS_ESTRELAS', [cpi, 1], str))
         button1.place(relx=0.51, rely=0.91, anchor=tkinter.CENTER)
 
         # Funções específicas para cientista
@@ -143,7 +148,7 @@ def show_home(db_controller, id_user, user_name, access_level, nacao, cpi, facca
             func8_button = customtkinter.CTkButton(master=frame, text=f"Remover facção de nação", width=200, height=40, command=lambda: lider_help.remover_faccao_nacao(frame, db_controller, cpi, faccao))
             func8_button.place(relx=0.15, rely=0.84, anchor=tkinter.CENTER)
 
-            button2 = customtkinter.CTkButton(master=frame, text="Relatório de Facção", width=200, height=40)
+            button2 = customtkinter.CTkButton(master=frame, text="Relatório de Facção", width=200, height=40, command=lambda: gera_relatorio(db_controller, 'PCT_RELATORIO_LIDER.GERAR_RELATORIO_COMUNIDADES', [cpi, 1], str))
             button2.place(relx=0.51, rely=0.85, anchor=tkinter.CENTER)
         
 
