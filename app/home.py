@@ -58,8 +58,17 @@ def show_home(db_controller, id_user, user_name, access_level, nacao, cpi, facca
 
     if "OFICIAL" in access_level:
         # Relatório do oficial
-        button1 = customtkinter.CTkButton(master=frame, text="Relatório de habitantes", width=200, height=40, command=lambda: gera_relatorio(db_controller, 'PCT_RELATORIO_OFICIAL.GERAR_RELATORIO_HABITANTES', [cpi, 1], str, cpi))
+        button1 = customtkinter.CTkButton(master=frame, text="Relatório de habitantes", width=200, height=40, command=lambda: gera_relatorio(db_controller, 'PCT_RELATORIO_OFICIAL.GERAR_RELATORIO_HABITANTES', [cpi, 1], str))
         button1.place(relx=0.51, rely=0.91, anchor=tkinter.CENTER)
+
+        button2 = customtkinter.CTkButton(master=frame, text="Relatório de habitantes", width=200, height=40, command=lambda: gera_relatorio(db_controller, 'PCT_RELATORIO_OFICIAL.GERAR_RELATORIO_HABITANTES', [cpi, 1], str))
+        button2.place(relx=0.51, rely=0.85, anchor=tkinter.CENTER)
+
+        button3 = customtkinter.CTkButton(master=frame, text="Relatório de habitantes", width=200, height=40, command=lambda: gera_relatorio(db_controller, 'PCT_RELATORIO_OFICIAL.GERAR_RELATORIO_HABITANTES', [cpi, 1], str))
+        button3.place(relx=0.51, rely=0.79, anchor=tkinter.CENTER)
+
+        button4 = customtkinter.CTkButton(master=frame, text="Relatório de habitantes", width=200, height=40, command=lambda: gera_relatorio(db_controller, 'PCT_RELATORIO_OFICIAL.GERAR_RELATORIO_HABITANTES', [cpi, 1], str))
+        button4.place(relx=0.77, rely=0.79, anchor=tkinter.CENTER)
 
         # Funções específicas para Líder de facção
         if "LIDER" in access_level:
@@ -75,8 +84,9 @@ def show_home(db_controller, id_user, user_name, access_level, nacao, cpi, facca
             func4_button = customtkinter.CTkButton(master=frame, text=f"Remover facção de nação", width=200, height=40, command=lambda: lider_help.remover_faccao_nacao(frame, db_controller, cpi, faccao))
             func4_button.place(relx=0.15, rely=0.52, anchor=tkinter.CENTER)
 
-            button2 = customtkinter.CTkButton(master=frame, text="Relatório de Facção", width=200, height=40, command=lambda: gera_relatorio(db_controller, 'PCT_RELATORIO_LIDER.GERAR_RELATORIO_COMUNIDADES', [cpi, 1], str))
-            button2.place(relx=0.51, rely=0.85, anchor=tkinter.CENTER)
+            button5 = customtkinter.CTkButton(master=frame, text="Relatório de Facção", width=200, height=40, command=lambda: gera_relatorio(db_controller, 'PCT_RELATORIO_LIDER.GERAR_RELATORIO_COMUNIDADES', [cpi, 1], str))
+            button5.place(relx=0.77, rely=0.85, anchor=tkinter.CENTER)
+
 
 
     elif "COMANDANTE" in access_level:
