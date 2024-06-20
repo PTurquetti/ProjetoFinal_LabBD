@@ -9,6 +9,9 @@ from relatorio import show_report_page
 
 def gera_relatorio(db_controller, a, b, c):
     s = db_controller.call_function(a, b, c)
+    db_controller.commit()
+    db_controller.call_function('PCT_USER_TABLE.INSERIR_LOG', [b[0], f'Relatório Gerado - {a}'], str)
+    db_controller.commit()
     show_report_page(s)
 
 def show_home(db_controller, id_user, user_name, access_level, nacao, cpi, faccao):
@@ -19,6 +22,8 @@ def show_home(db_controller, id_user, user_name, access_level, nacao, cpi, facca
 
     def back_to_login():
         home_window.destroy()
+        db_controller.call_function('PCT_USER_TABLE.INSERIR_LOG', [cpi, 'Logout'], str)
+        db_controller.commit()
         show_login(db_controller)
     
     
@@ -53,7 +58,7 @@ def show_home(db_controller, id_user, user_name, access_level, nacao, cpi, facca
 
     if "OFICIAL" in access_level:
         # Relatório do oficial
-        button1 = customtkinter.CTkButton(master=frame, text="Relatório de habitantes", width=200, height=40, command=lambda: gera_relatorio(db_controller, 'PCT_RELATORIO_OFICIAL.GERAR_RELATORIO_HABITANTES', [cpi, 1], str))
+        button1 = customtkinter.CTkButton(master=frame, text="Relatório de habitantes", width=200, height=40, command=lambda: gera_relatorio(db_controller, 'PCT_RELATORIO_OFICIAL.GERAR_RELATORIO_HABITANTES', [cpi, 1], str, cpi))
         button1.place(relx=0.51, rely=0.91, anchor=tkinter.CENTER)
 
         # Funções específicas para Líder de facção

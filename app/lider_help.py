@@ -27,9 +27,12 @@ def show_popup(message):
 def alterar_nome(db_controller, cpi, novo_nome):
         try:
                 info_funcao = db_controller.call_function('PCT_GERENCIAMENTO_LIDER.alterar_nome_faccao', [cpi, novo_nome], str)
+                db_controller.commit()
                 show_popup(info_funcao)
+                db_controller.call_function('PCT_USER_TABLE.INSERIR_LOG', [cpi, 'Nome da facção alterado com sucesso'], str)
                 db_controller.commit()
         except DatabaseError as ex:
+                db_controller.rollback()
                 error, = ex.args
                 if error.code == 20000:  # erro lógico 
                         msg_erro = error.message.split(':')[1][:-10].strip()
@@ -38,13 +41,18 @@ def alterar_nome(db_controller, cpi, novo_nome):
                 else:
                         show_popup('Erro da base de dados (olhar log)')
                         print('Erro da base de dados:', error.code, error.message)
+                db_controller.call_function('PCT_USER_TABLE.INSERIR_LOG', [cpi, 'Tentativa de alteração de nome da facção com falha'], str)
+                db_controller.commit()
 
 def indica_lider(db_controller, cpi, novo_lider):
         try:
                 info_funcao = db_controller.call_function('PCT_GERENCIAMENTO_LIDER.indica_lider', [cpi, novo_lider], str)
+                db_controller.commit()
                 show_popup(info_funcao)
+                db_controller.call_function('PCT_USER_TABLE.INSERIR_LOG', [cpi, 'Líder indicado com sucesso'], str)
                 db_controller.commit()
         except DatabaseError as ex:
+                db_controller.rollback()
                 error, = ex.args
                 if error.code == 20000:  # erro lógico 
                         msg_erro = error.message.split(':')[1][:-10].strip()
@@ -53,13 +61,18 @@ def indica_lider(db_controller, cpi, novo_lider):
                 else:
                         show_popup('Erro da base de dados (olhar log)')
                         print('Erro da base de dados:', error.code, error.message)
+                db_controller.call_function('PCT_USER_TABLE.INSERIR_LOG', [cpi, 'Tentativa de indicação de líder com falha'], str)
+                db_controller.commit()
 
 def insere_com(db_controller, cpi, especie, nome):
         try:
                 info_funcao = db_controller.call_function('PCT_GERENCIAMENTO_LIDER.credenciar_comunidade', [cpi, especie, nome], str)
+                db_controller.commit()
                 show_popup(info_funcao)
+                db_controller.call_function('PCT_USER_TABLE.INSERIR_LOG', [cpi, 'Comunidade credenciada com sucesso'], str)
                 db_controller.commit()
         except DatabaseError as ex:
+                db_controller.rollback()
                 error, = ex.args
                 if error.code == 20000:  # erro lógico 
                         msg_erro = error.message.split(':')[1][:-10].strip()
@@ -68,13 +81,18 @@ def insere_com(db_controller, cpi, especie, nome):
                 else:
                         show_popup('Erro da base de dados (olhar log) ' + str(error.code) + ' '  + error.message)
                         print('Erro da base de dados:', error.code, error.message)
+                db_controller.call_function('PCT_USER_TABLE.INSERIR_LOG', [cpi, 'Tentativa de credenciamento de comunidade com falha'], str)
+                db_controller.commit()
 
 def remover_faccao(db_controller, cpi, nacao, faccao):
         try:
                 info_funcao = db_controller.call_function('PCT_GERENCIAMENTO_LIDER.remove_faccao_de_nacao', [cpi, nacao], str)
+                db_controller.commit()
                 show_popup(info_funcao)
+                db_controller.call_function('PCT_USER_TABLE.INSERIR_LOG', [cpi, 'Facção removida da nação com sucesso'], str)
                 db_controller.commit()
         except DatabaseError as ex:
+                db_controller.rollback()
                 error, = ex.args
                 if error.code == 20000:  # erro lógico 
                         msg_erro = error.message.split(':')[1][:-10].strip()
@@ -83,6 +101,8 @@ def remover_faccao(db_controller, cpi, nacao, faccao):
                 else:
                         show_popup('Erro da base de dados (olhar log) ' + str(error.code) + ' '  + error.message)
                         print('Erro da base de dados:', error.code, error.message)
+                db_controller.call_function('PCT_USER_TABLE.INSERIR_LOG', [cpi, 'Tentativa de remoção de facção da nação com falha'], str)
+                db_controller.commit()
         
 
 def alter_faction_name(frame, db_controller, cpi):

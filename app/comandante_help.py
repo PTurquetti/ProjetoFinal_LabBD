@@ -28,9 +28,12 @@ def show_popup(message):
 def inclui_fac_nac(db_controller, cpi, federacao):
         try:
                 info_funcao = db_controller.call_function('PCT_GERENCIAMENTO_COMANDANTE.inserir_federacao', [cpi, federacao], str)
+                db_controller.commit()
                 show_popup(info_funcao)
+                db_controller.call_function('PCT_USER_TABLE.INSERIR_LOG', [cpi, 'Inserção de federação com sucesso'], str)
                 db_controller.commit()
         except DatabaseError as ex:
+                db_controller.rollback()
                 error, = ex.args
                 if error.code == 20000:  # erro lógico 
                         msg_erro = error.message.split(':')[1][:-10].strip()
@@ -39,13 +42,18 @@ def inclui_fac_nac(db_controller, cpi, federacao):
                 else:
                         show_popup('Erro da base de dados (olhar log)')
                         print('Erro da base de dados:', error.code, error.message)
+                db_controller.call_function('PCT_USER_TABLE.INSERIR_LOG', [cpi, 'Tentativa de inserção de federação com falha'], str)
+                db_controller.commit()
 
 def exclui_fac_nac(db_controller, cpi):
         try:
                 info_funcao = db_controller.call_function('PCT_GERENCIAMENTO_COMANDANTE.excluir_federacao', [cpi], str)
+                db_controller.commit()
                 show_popup(info_funcao)
+                db_controller.call_function('PCT_USER_TABLE.INSERIR_LOG', [cpi, 'Exclusão de federação com sucesso'], str)
                 db_controller.commit()
         except DatabaseError as ex:
+                db_controller.rollback()
                 error, = ex.args
                 if error.code == 20000:  # erro lógico 
                         msg_erro = error.message.split(':')[1][:-10].strip()
@@ -54,13 +62,18 @@ def exclui_fac_nac(db_controller, cpi):
                 else:
                         show_popup('Erro da base de dados (olhar log)')
                         print('Erro da base de dados:', error.code, error.message)
+                db_controller.call_function('PCT_USER_TABLE.INSERIR_LOG', [cpi, 'Tentativa de exclusão de federação com falha'], str)
+                db_controller.commit()
 
 def nova_fed(db_controller, cpi, nova_fed):
         try:
                 info_funcao = db_controller.call_function('PCT_GERENCIAMENTO_COMANDANTE.criar_federacao', [cpi, nova_fed], str)
+                db_controller.commit()
                 show_popup(info_funcao)
+                db_controller.call_function('PCT_USER_TABLE.INSERIR_LOG', [cpi, 'Criação de federação com sucesso'], str)
                 db_controller.commit()
         except DatabaseError as ex:
+                db_controller.rollback()
                 error, = ex.args
                 if error.code == 20000:  # erro lógico 
                         msg_erro = error.message.split(':')[1][:-10].strip()
@@ -69,13 +82,18 @@ def nova_fed(db_controller, cpi, nova_fed):
                 else:
                         show_popup('Erro da base de dados (olhar log)')
                         print('Erro da base de dados:', error.code, error.message)
+                db_controller.call_function('PCT_USER_TABLE.INSERIR_LOG', [cpi, 'Tentativa de criação de federação com falha'], str)
+                db_controller.commit()
 
 def insere_dom(db_controller, cpi, planeta):
         try:
                 info_funcao = db_controller.call_function('PCT_GERENCIAMENTO_COMANDANTE.insere_dominancia', [cpi, planeta], str)
+                db_controller.commit()
                 show_popup(info_funcao)
+                db_controller.call_function('PCT_USER_TABLE.INSERIR_LOG', [cpi, 'Inserção de dominância com sucesso'], str)
                 db_controller.commit()
         except DatabaseError as ex:
+                db_controller.rollback()
                 error, = ex.args
                 if error.code == 20000:  # erro lógico 
                         msg_erro = error.message.split(':')[1][:-10].strip()
@@ -84,6 +102,8 @@ def insere_dom(db_controller, cpi, planeta):
                 else:
                         show_popup('Erro da base de dados (olhar log)')
                         print('Erro da base de dados:', error.code, error.message)
+                db_controller.call_function('PCT_USER_TABLE.INSERIR_LOG', [cpi, 'Tentativa de inserção de dominância com falha'], str)
+                db_controller.commit()
                         
 def incluir_nacao_federacao(frame, db_controller, cpi):
         # TODO: Implementar a conexão com o banco de dados para incluir a nação na federação

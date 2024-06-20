@@ -27,9 +27,12 @@ def show_popup(message):
 def insere(db_controller, cpi, id, x, y, z):
         try:
                 info_funcao = db_controller.call_function('PCT_GERENCIAMENTO_CIENTISTA.insere_estrela', [cpi, id, 'Nome_padrao', 'Padrao', 1000, x, y, z], str)
+                db_controller.commit()
                 show_popup(info_funcao)
+                db_controller.call_function('PCT_USER_TABLE.INSERIR_LOG', [cpi, f'Inserção de estrela{id} com sucesso'], str)
                 db_controller.commit()
         except DatabaseError as ex:
+                db_controller.rollback()
                 error, = ex.args
                 if error.code == 20000:  # erro lógico 
                         msg_erro = error.message.split(':')[1][:-10].strip()
@@ -38,13 +41,18 @@ def insere(db_controller, cpi, id, x, y, z):
                 else:
                         show_popup('Erro da base de dados (olhar log)')
                         print('Erro da base de dados:', error.code, error.message)
+                db_controller.call_function('PCT_USER_TABLE.INSERIR_LOG', [cpi, f'Tentativa de inserção de estrela{id} com falha'], str)
+                db_controller.commit()
 
 def atualiza(db_controller, cpi, id, nome, classificacao, massa, x, y, z):
         try:
                 info_funcao = db_controller.call_function('PCT_GERENCIAMENTO_CIENTISTA.update_estrela', [cpi, id, nome, classificacao, massa, x, y, z], str)
+                db_controller.commit()
                 show_popup(info_funcao)
+                db_controller.call_function('PCT_USER_TABLE.INSERIR_LOG', [cpi, f'Atualização de estrela{id} com sucesso'], str)
                 db_controller.commit()
         except DatabaseError as ex:
+                db_controller.rollback()
                 error, = ex.args
                 if error.code == 20000:  # erro lógico 
                         msg_erro = error.message.split(':')[1][:-10].strip()
@@ -53,13 +61,18 @@ def atualiza(db_controller, cpi, id, nome, classificacao, massa, x, y, z):
                 else:
                         show_popup('Erro da base de dados (olhar log)')
                         print('Erro da base de dados:', error.code, error.message)
+                db_controller.call_function('PCT_USER_TABLE.INSERIR_LOG', [cpi, f'Tentativa de atualização de estrela{id} com falha'], str)
+                db_controller.commit()
 
 def ver(db_controller, cpi, id):
         try:
                 info_funcao = db_controller.call_function('PCT_GERENCIAMENTO_CIENTISTA.ler_estrela_por_id', [cpi, id], str)
+                db_controller.commit()
                 show_popup(info_funcao)
+                db_controller.call_function('PCT_USER_TABLE.INSERIR_LOG', [cpi, f'Leitura de estrela{id} com sucesso'], str)
                 db_controller.commit()
         except DatabaseError as ex:
+                db_controller.rollback()
                 error, = ex.args
                 if error.code == 20000:  # erro lógico 
                         msg_erro = error.message.split(':')[1][:-10].strip()
@@ -68,13 +81,18 @@ def ver(db_controller, cpi, id):
                 else:
                         show_popup('Erro da base de dados (olhar log)')
                         print('Erro da base de dados:', error.code, error.message)
+                db_controller.call_function('PCT_USER_TABLE.INSERIR_LOG', [cpi, f'Tentativa de leitura de estrela{id} com falha'], str)
+                db_controller.commit()
                         
 def remove(db_controller, cpi, id):
         try:
                 info_funcao = db_controller.call_function('PCT_GERENCIAMENTO_CIENTISTA.remove_estrela_por_id', [cpi, id], str)
+                db_controller.commit()
                 show_popup(info_funcao)
+                db_controller.call_function('PCT_USER_TABLE.INSERIR_LOG', [cpi, f'Remoção de estrela{id} com sucesso'], str)
                 db_controller.commit()
         except DatabaseError as ex:
+                db_controller.rollback()
                 error, = ex.args
                 if error.code == 20000:  # erro lógico 
                         msg_erro = error.message.split(':')[1][:-10].strip()
@@ -83,10 +101,10 @@ def remove(db_controller, cpi, id):
                 else:
                         show_popup('Erro da base de dados (olhar log)')
                         print('Erro da base de dados:', error.code, error.message)
+                db_controller.call_function('PCT_USER_TABLE.INSERIR_LOG', [cpi, f'Tentativa de remoção de estrela{id} com falha'], str)
+                db_controller.commit()
 
 def inserir_nova_estrela(frame, db_controller, cpi):
-        # TODO: Implementar a conexão com o banco de dados para inserir a nova estrela
-        
         frame3 = customtkinter.CTkFrame(master=frame, width=550, height=300, corner_radius=36)  # Create a frame with rounded corners
         frame3.place(relx=0.64, rely=0.53, anchor=tkinter.CENTER) # Place the frame in the center of the label
 
@@ -112,8 +130,6 @@ def inserir_nova_estrela(frame, db_controller, cpi):
         buttonFName.place(relx=0.5, rely=0.85, anchor=tkinter.CENTER)
 
 def ver_informacoes_estrela(frame, db_controller, cpi):
-        # TODO: Implementar a conexão com o banco de dados para buscar as informações da estrela
-        
         frame3 = customtkinter.CTkFrame(master=frame, width=550, height=300, corner_radius=36)  # Create a frame with rounded corners
         frame3.place(relx=0.64, rely=0.53, anchor=tkinter.CENTER) # Place the frame in the center of the label
 
@@ -127,8 +143,6 @@ def ver_informacoes_estrela(frame, db_controller, cpi):
         buttonFName.place(relx=0.5, rely=0.7, anchor=tkinter.CENTER)
 
 def atualizar_estrela(frame, db_controller, cpi):
-        # TODO: Implementar a conexão com o banco de dados para atualizar a estrela
-        
         frame3 = customtkinter.CTkFrame(master=frame, width=550, height=300, corner_radius=36)  # Create a frame with rounded corners
         frame3.place(relx=0.64, rely=0.53, anchor=tkinter.CENTER) # Place the frame in the center of the label
 
@@ -160,8 +174,6 @@ def atualizar_estrela(frame, db_controller, cpi):
         buttonFName.place(relx=0.5, rely=0.85, anchor=tkinter.CENTER)
 
 def remover_estrela(frame, db_controller, cpi):
-        # TODO: implementar a conexão com o banco de dados para remover a estrela
-        
         frame3 = customtkinter.CTkFrame(master=frame, width=550, height=300, corner_radius=36)  # Create a frame with rounded corners
         frame3.place(relx=0.64, rely=0.53, anchor=tkinter.CENTER) # Place the frame in the center of the label
 
